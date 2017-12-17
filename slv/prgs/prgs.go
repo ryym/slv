@@ -13,6 +13,8 @@ func FindProgram(srcPath string) (t.Program, error) {
 		return &ProgramGo{}, nil
 	case ".rb":
 		return &ProgramRuby{}, nil
+	case ".scala":
+		return &ProgramScala{}, nil
 	default:
 		file := filepath.Base(srcPath)
 		return nil, fmt.Errorf("Unsupported source code: %s", file)
@@ -42,4 +44,18 @@ func (pg *ProgramRuby) GetCompileCmds(src string, _destDir string) t.CompileCmds
 }
 func (pg *ProgramRuby) GetExecCmds(execPath string) []string {
 	return []string{"ruby", execPath}
+}
+
+type ProgramScala struct{}
+
+func (pg *ProgramScala) GetCompileCmds(src string, destDir string) t.CompileCmds {
+	return t.CompileCmds{
+		Cmds:     []string{"scalac", "-d", destDir, src},
+		ExecPath: destDir,
+	}
+}
+func (pg *ProgramScala) GetExecCmds(execPath string) []string {
+	// It is better if users can configure output class name
+	// (currently 'Main').
+	return []string{"scala", "-cp", execPath, "Main"}
 }
