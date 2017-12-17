@@ -17,6 +17,12 @@ func CreateApp() *cli.App {
 			ArgsUsage: "[directory]",
 			Action:    cmdNew,
 		},
+		{
+			Name:      "test",
+			Usage:     "Run tests for the specified source code",
+			ArgsUsage: "[src]",
+			Action:    cmdTest,
+		},
 	}
 	return app
 }
@@ -29,4 +35,22 @@ func cmdNew(c *cli.Context) error {
 	return slv.MakeDir(t.CmdNewOpts{
 		Name: name,
 	})
+}
+
+func cmdTest(c *cli.Context) error {
+	if c.NArg() != 1 {
+		cli.ShowCommandHelpAndExit(c, "test", 0)
+	}
+
+	conf, err := slv.MakeExecConf(c.Args()[0])
+	if err != nil {
+		return cli.NewExitError(err.Error(), 1)
+	}
+
+	err = slv.TestAll(&conf)
+
+	if err != nil {
+		return cli.NewExitError(err.Error(), 1)
+	}
+	return nil
 }

@@ -13,3 +13,7 @@ type Probdir struct {
 	SrcPath string
 	WorkDir string
 }
+
+type ExecConf struct {
+	Probdir
+}
