@@ -17,3 +17,9 @@ type Probdir struct {
 type ExecConf struct {
 	Probdir
 }
+
+type Program interface {
+	ShouldCompile() bool
+	GetCompileCmds(src string, dest string) []string
+	GetExecCmds(execPath string) []string
+}

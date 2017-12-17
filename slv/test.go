@@ -11,6 +11,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/pkg/errors"
+	"github.com/ryym/slv/slv/prgs"
 	"github.com/ryym/slv/slv/t"
 )
 
@@ -24,10 +25,26 @@ type testCases struct {
 }
 
 func TestAll(c *t.ExecConf) error {
-	binpath, err := Compile(c)
+	prg, err := prgs.FindProgram(c.SrcPath)
 	if err != nil {
 		return err
 	}
+
+	var execPath string
+	if prg.ShouldCompile() {
+		execPath = fmt.Sprintf("%s/%s.compiled", c.WorkDir, c.SrcFile)
+
+		cmds := prg.GetCompileCmds(c.SrcPath, execPath)
+		cmd := exec.Command(cmds[0], cmds[1:]...)
+		_, err = cmd.Output()
+		if err != nil {
+			return errors.Wrapf(err, "Failed to compile %s", c.SrcFile)
+		}
+	} else {
+		execPath = c.SrcPath
+	}
+
+	execCmds := prg.GetExecCmds(execPath)
 
 	testdir := filepath.Join(c.RootDir, "test")
 	fs, err := ioutil.ReadDir(testdir)
@@ -56,7 +73,7 @@ func TestAll(c *t.ExecConf) error {
 		}
 
 		for _, inout := range t.Test {
-			cmd := exec.Command(binpath)
+			cmd := exec.Command(execCmds[0], execCmds[1:]...)
 
 			stdin, err := cmd.StdinPipe()
 			if err != nil {
