@@ -21,8 +21,12 @@ func FindProgram(srcPath string) (t.Program, error) {
 
 type ProgramGo struct{}
 
-func (pg *ProgramGo) GetCompileCmds(src string, dest string) []string {
-	return []string{"go", "build", "-o", dest, src}
+func (pg *ProgramGo) GetCompileCmds(src string, destDir string) t.CompileCmds {
+	bin := filepath.Join(destDir, "out")
+	return t.CompileCmds{
+		Cmds:     []string{"go", "build", "-o", bin, src},
+		ExecPath: bin,
+	}
 }
 func (pg *ProgramGo) GetExecCmds(execPath string) []string {
 	return []string{execPath}
@@ -30,8 +34,11 @@ func (pg *ProgramGo) GetExecCmds(execPath string) []string {
 
 type ProgramRuby struct{}
 
-func (pg *ProgramRuby) GetCompileCmds(src string, dest string) []string {
-	return nil
+func (pg *ProgramRuby) GetCompileCmds(src string, _destDir string) t.CompileCmds {
+	return t.CompileCmds{
+		Cmds:     nil,
+		ExecPath: src,
+	}
 }
 func (pg *ProgramRuby) GetExecCmds(execPath string) []string {
 	return []string{"ruby", execPath}

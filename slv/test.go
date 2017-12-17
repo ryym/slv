@@ -30,19 +30,26 @@ func TestAll(c *t.ExecConf) error {
 		return err
 	}
 
-	execPath := fmt.Sprintf("%s/%s.compiled", c.WorkDir, c.SrcFile)
-	if cmds := prg.GetCompileCmds(c.SrcPath, execPath); cmds != nil {
-		cmds := prg.GetCompileCmds(c.SrcPath, execPath)
-		cmd := exec.Command(cmds[0], cmds[1:]...)
+	destDir := fmt.Sprintf("%s/%s.built", c.WorkDir, c.SrcFile)
+	cmds := prg.GetCompileCmds(c.SrcPath, destDir)
+
+	if cmds.Cmds != nil {
+		_, err = os.Stat(destDir)
+		if os.IsNotExist(err) {
+			err = os.Mkdir(destDir, 0755)
+		}
+		if err != nil {
+			return errors.Wrapf(err, "Failed to create work dir for %s", c.SrcFile)
+		}
+
+		cmd := exec.Command(cmds.Cmds[0], cmds.Cmds[1:]...)
 		_, err = cmd.Output()
 		if err != nil {
 			return errors.Wrapf(err, "Failed to compile %s", c.SrcFile)
 		}
-	} else {
-		execPath = c.SrcPath
 	}
 
-	execCmds := prg.GetExecCmds(execPath)
+	execCmds := prg.GetExecCmds(cmds.ExecPath)
 
 	testdir := filepath.Join(c.RootDir, "test")
 	fs, err := ioutil.ReadDir(testdir)

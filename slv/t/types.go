@@ -19,6 +19,11 @@ type ExecConf struct {
 }
 
 type Program interface {
-	GetCompileCmds(src string, dest string) []string
+	GetCompileCmds(srcPath string, destDir string) CompileCmds
 	GetExecCmds(execPath string) []string
+}
+
+type CompileCmds struct {
+	Cmds     []string
+	ExecPath string
 }
