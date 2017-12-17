@@ -4,11 +4,12 @@ import (
 	"os"
 
 	"github.com/pkg/errors"
+	"github.com/ryym/slv/slv/t"
 )
 
 func Def() {}
 
-func MakeDir(opts CmdNewOpts) (err error) {
+func MakeDir(opts t.CmdNewOpts) (err error) {
 	name := opts.Name
 	err = os.Mkdir(name, 0755)
 	if err != nil {

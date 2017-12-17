@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/ryym/slv/slv"
+	"github.com/ryym/slv/slv/t"
 	"github.com/urfave/cli"
 )
 
@@ -25,7 +26,7 @@ func cmdNew(c *cli.Context) error {
 		cli.ShowCommandHelpAndExit(c, "new", 0)
 	}
 	name := c.Args()[0]
-	return slv.MakeDir(slv.CmdNewOpts{
+	return slv.MakeDir(t.CmdNewOpts{
 		Name: name,
 	})
 }
