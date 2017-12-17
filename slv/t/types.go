@@ -6,3 +6,10 @@ package t
 type CmdNewOpts struct {
 	Name string
 }
+
+type Probdir struct {
+	RootDir string
+	SrcFile string
+	SrcPath string
+	WorkDir string
+}
