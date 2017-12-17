@@ -43,9 +43,9 @@ func TestAll(c *t.ExecConf) error {
 		}
 
 		cmd := exec.Command(cmds.Cmds[0], cmds.Cmds[1:]...)
-		_, err = cmd.Output()
+		out, err := cmd.CombinedOutput()
 		if err != nil {
-			return errors.Wrapf(err, "Failed to compile %s", c.SrcFile)
+			return errors.Wrap(err, string(out))
 		}
 	}
 
@@ -82,7 +82,7 @@ func TestAll(c *t.ExecConf) error {
 
 			stdin, err := cmd.StdinPipe()
 			if err != nil {
-				return errors.Wrapf(err, "Failed to run %s", c.SrcFile)
+				return errors.Wrapf(err, "Failed to pipe stdin to %s", c.SrcFile)
 			}
 
 			go func() {
@@ -92,7 +92,7 @@ func TestAll(c *t.ExecConf) error {
 
 			out, err := cmd.CombinedOutput()
 			if err != nil {
-				return errors.Wrapf(err, "Failed to run %s", c.SrcFile)
+				return errors.Wrap(err, string(out))
 			}
 
 			expected := inout.Out
