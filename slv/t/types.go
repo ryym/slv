@@ -19,7 +19,6 @@ type ExecConf struct {
 }
 
 type Program interface {
-	ShouldCompile() bool
 	GetCompileCmds(src string, dest string) []string
 	GetExecCmds(execPath string) []string
 }

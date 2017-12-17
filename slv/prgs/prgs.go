@@ -21,9 +21,6 @@ func FindProgram(srcPath string) (t.Program, error) {
 
 type ProgramGo struct{}
 
-func (pg *ProgramGo) ShouldCompile() bool {
-	return true
-}
 func (pg *ProgramGo) GetCompileCmds(src string, dest string) []string {
 	return []string{"go", "build", "-o", dest, src}
 }
@@ -33,9 +30,6 @@ func (pg *ProgramGo) GetExecCmds(execPath string) []string {
 
 type ProgramRuby struct{}
 
-func (pg *ProgramRuby) ShouldCompile() bool {
-	return false
-}
 func (pg *ProgramRuby) GetCompileCmds(src string, dest string) []string {
 	return nil
 }

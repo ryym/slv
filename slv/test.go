@@ -30,10 +30,8 @@ func TestAll(c *t.ExecConf) error {
 		return err
 	}
 
-	var execPath string
-	if prg.ShouldCompile() {
-		execPath = fmt.Sprintf("%s/%s.compiled", c.WorkDir, c.SrcFile)
-
+	execPath := fmt.Sprintf("%s/%s.compiled", c.WorkDir, c.SrcFile)
+	if cmds := prg.GetCompileCmds(c.SrcPath, execPath); cmds != nil {
 		cmds := prg.GetCompileCmds(c.SrcPath, execPath)
 		cmd := exec.Command(cmds[0], cmds[1:]...)
 		_, err = cmd.Output()
