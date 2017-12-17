@@ -24,17 +24,30 @@ type testCases struct {
 	Test []testCase
 }
 
-func TestAll(c *t.ExecConf) error {
+type failedTestCase struct {
+	testCase
+	Actual string
+	Name   string
+}
+
+type testResult struct {
+	Ok          bool
+	CaseCnt     int
+	PassedCnt   int
+	FailedCases []failedTestCase
+}
+
+func TestAll(c *t.ExecConf) (result testResult, err error) {
 	prg, err := prgs.FindProgram(c.SrcPath)
 	if err != nil {
-		return err
+		return result, err
 	}
 
 	destDir := fmt.Sprintf("%s/%s.built", c.WorkDir, c.SrcFile)
 	cmds := prg.GetCompileCmds(c.SrcPath, destDir)
 	err = compileIfNeed(&cmds, destDir)
 	if err != nil {
-		return err
+		return result, err
 	}
 
 	execCmds := prg.GetExecCmds(cmds.ExecPath)
@@ -42,29 +55,48 @@ func TestAll(c *t.ExecConf) error {
 	testdir := filepath.Join(c.RootDir, "test")
 	fs, err := ioutil.ReadDir(testdir)
 	if err != nil {
-		return errors.Wrap(err, "Failed to read test directory")
+		return result, errors.Wrap(err, "Failed to read test directory")
 	}
 
+	result.FailedCases = []failedTestCase{}
 	for _, entry := range fs {
-		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".toml") {
+		filename := entry.Name()
+		if entry.IsDir() || !strings.HasSuffix(filename, ".toml") {
 			continue
 		}
 
-		t, err := loadTestCases(testdir, entry.Name())
+		t, err := loadTestCases(testdir, filename)
 		if err != nil {
-			return err
+			return result, err
 		}
 
-		for _, inout := range t.Test {
+		result.CaseCnt += len(t.Test)
+		for i, inout := range t.Test {
 			cmd := makeCommand(execCmds)
-			err = runTestCase(c, &inout, cmd)
+			out, err := runTestCase(inout.In, cmd)
 			if err != nil {
-				return err
+				return result, err
+			}
+
+			expected := inout.Out
+			if !strings.HasSuffix(expected, "\n") {
+				expected += "\n"
+			}
+
+			if out == expected {
+				result.PassedCnt += 1
+			} else {
+				result.FailedCases = append(result.FailedCases, failedTestCase{
+					testCase: inout,
+					Actual:   out,
+					Name:     fmt.Sprintf("%s[%d]", filename, i),
+				})
 			}
 		}
 	}
+	result.Ok = len(result.FailedCases) == 0
 
-	return nil
+	return result, nil
 }
 
 func compileIfNeed(cmds *t.CompileCmds, destDir string) error {
@@ -108,29 +140,21 @@ func loadTestCases(dir string, filename string) (tcs testCases, err error) {
 	return tcs, nil
 }
 
-func runTestCase(c *t.ExecConf, inout *testCase, cmd *exec.Cmd) error {
+func runTestCase(input string, cmd *exec.Cmd) (actual string, err error) {
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
-		return errors.Wrapf(err, "Failed to pipe stdin to %s", c.SrcFile)
+		return "", errors.Wrap(err, "Failed to pipe stdin")
 	}
 
 	go func() {
 		defer stdin.Close()
-		io.WriteString(stdin, inout.In)
+		io.WriteString(stdin, input)
 	}()
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return errors.Wrap(err, string(out))
+		return "", errors.Wrap(err, string(out))
 	}
 
-	expected := inout.Out
-	if !strings.HasSuffix(expected, "\n") {
-		expected += "\n"
-	}
-
-	// TODO: Compare results instead of just printing them.
-	fmt.Printf("IN: %s, GOT: %sWANT: %s %v\n", inout.In, out, expected, string(out) == expected)
-
-	return nil
+	return string(out), nil
 }

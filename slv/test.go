@@ -6,5 +6,9 @@ import (
 )
 
 func TestAll(c *t.ExecConf) error {
-	return test.TestAll(c)
+	result, err := test.TestAll(c)
+	if err != nil {
+		return err
+	}
+	return test.ShowResult(&result)
 }
