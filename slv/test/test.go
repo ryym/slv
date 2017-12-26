@@ -11,54 +11,16 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/pkg/errors"
-	"github.com/ryym/slv/slv/prgs"
-	"github.com/ryym/slv/slv/t"
 )
 
-type testCase struct {
-	In  string
-	Out string
-}
-
-type testCases struct {
-	Test []testCase
-}
-
-type failedTestCase struct {
-	testCase
-	Actual string
-	Name   string
-}
-
-type testResult struct {
-	Ok          bool
-	CaseCnt     int
-	PassedCnt   int
-	FailedCases []failedTestCase
-}
-
-func TestAll(c *t.ExecConf) (result testResult, err error) {
-	prg, err := prgs.FindProgram(c.SrcPath)
-	if err != nil {
-		return result, err
-	}
-
-	destDir := fmt.Sprintf("%s/%s.built", c.WorkDir, c.SrcFile)
-	cmds := prg.GetCompileCmds(c.SrcPath, destDir)
-	err = compileIfNeed(&cmds, destDir)
-	if err != nil {
-		return result, err
-	}
-
-	execCmds := prg.GetExecCmds(cmds.ExecPath)
-
-	testdir := filepath.Join(c.RootDir, "test")
+func TestAll(execCmds []string, testdir string, printer TestResultPrinter) error {
 	fs, err := ioutil.ReadDir(testdir)
 	if err != nil {
-		return result, errors.Wrap(err, "Failed to read test directory")
+		return errors.Wrap(err, "Failed to read test directory")
 	}
 
-	result.FailedCases = []failedTestCase{}
+	totalResult := totalTestResult{}
+
 	for _, entry := range fs {
 		filename := entry.Name()
 		if entry.IsDir() || !strings.HasSuffix(filename, ".toml") {
@@ -67,58 +29,45 @@ func TestAll(c *t.ExecConf) (result testResult, err error) {
 
 		t, err := loadTestCases(testdir, filename)
 		if err != nil {
-			return result, err
+			return err
 		}
 
-		result.CaseCnt += len(t.Test)
+		totalResult.CaseCnt += len(t.Test)
 		for i, inout := range t.Test {
-			cmd := makeCommand(execCmds)
+			cmd := exec.Command(execCmds[0], execCmds[1:]...)
 			out, err := runTestCase(inout.In, cmd)
 			if err != nil {
-				return result, err
+				return err
 			}
 
-			expected := inout.Out
-			if !strings.HasSuffix(expected, "\n") {
-				expected += "\n"
+			if !strings.HasSuffix(inout.Out, "\n") {
+				inout.Out += "\n"
+			}
+			if inout.Name == "" {
+				inout.Name = fmt.Sprintf("%s[%d]", filename, i)
 			}
 
-			if out == expected {
-				result.PassedCnt += 1
+			result := testResult{
+				Ok:       inout.Out == out,
+				TestCase: inout,
+				Actual:   out,
+				Filename: filename,
+			}
+
+			printer.ShowResult(&result)
+
+			if result.Ok {
+				totalResult.PassedCnt += 1
 			} else {
-				result.FailedCases = append(result.FailedCases, failedTestCase{
-					testCase: inout,
-					Actual:   out,
-					Name:     fmt.Sprintf("%s[%d]", filename, i),
-				})
+				totalResult.Fails = append(totalResult.Fails, result)
 			}
 		}
 	}
-	result.Ok = len(result.FailedCases) == 0
 
-	return result, nil
-}
+	printer.ShowFailures(totalResult.Fails)
+	printer.ShowSummary(&totalResult)
 
-func compileIfNeed(cmds *t.CompileCmds, destDir string) error {
-	if cmds.Cmds != nil {
-		_, err := os.Stat(destDir)
-		if os.IsNotExist(err) {
-			err = os.Mkdir(destDir, 0755)
-		}
-		if err != nil {
-			return errors.Wrap(err, "Failed to create work dir")
-		}
-
-		out, err := makeCommand(cmds.Cmds).CombinedOutput()
-		if err != nil {
-			return errors.Wrap(err, string(out))
-		}
-	}
 	return nil
-}
-
-func makeCommand(cmds []string) *exec.Cmd {
-	return exec.Command(cmds[0], cmds[1:]...)
 }
 
 func loadTestCases(dir string, filename string) (tcs testCases, err error) {
