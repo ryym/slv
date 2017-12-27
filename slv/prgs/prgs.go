@@ -2,12 +2,17 @@ package prgs
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/ryym/slv/slv/t"
 )
 
 func FindProgram(srcPath string) (t.Program, error) {
+	if _, err := os.Stat(srcPath); err != nil {
+		return nil, err
+	}
+
 	switch filepath.Ext(srcPath) {
 	case ".go":
 		return &ProgramGo{}, nil
