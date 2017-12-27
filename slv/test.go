@@ -1,13 +1,13 @@
 package slv
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 
 	"github.com/pkg/errors"
 	"github.com/ryym/slv/slv/prgs"
+	"github.com/ryym/slv/slv/probdir"
 	"github.com/ryym/slv/slv/t"
 	"github.com/ryym/slv/slv/test"
 )
@@ -29,7 +29,7 @@ func findAndCompile(c *t.ExecConf) ([]string, error) {
 		return nil, err
 	}
 
-	destDir := fmt.Sprintf("%s/%s.built", c.WorkDir, c.SrcFile)
+	destDir := probdir.GetDestDir(c)
 	cmds := prg.GetCompileCmds(c.SrcPath, destDir)
 
 	if cmds.Cmds != nil {

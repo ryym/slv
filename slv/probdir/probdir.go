@@ -1,6 +1,7 @@
 package probdir
 
 import (
+	"fmt"
 	"path/filepath"
 
 	"github.com/ryym/slv/slv/t"
@@ -23,4 +24,8 @@ func NewFromSrcPath(srcPath string) (pbd t.Probdir, err error) {
 		SrcPath: srcPath,
 		WorkDir: GetWorkDir(root),
 	}, nil
+}
+
+func GetDestDir(c *t.ExecConf) string {
+	return fmt.Sprintf("%s/%s.built", c.WorkDir, c.SrcFile)
 }
