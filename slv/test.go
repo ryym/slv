@@ -12,10 +12,10 @@ import (
 	"github.com/ryym/slv/slv/test"
 )
 
-func TestAll(c *t.ExecConf) error {
+func TestAll(c *t.ExecConf) (bool, error) {
 	execCmds, err := compileProgram(c)
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	testdir := filepath.Join(c.RootDir, "test")

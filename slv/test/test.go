@@ -13,10 +13,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-func TestAll(execCmds []string, testdir string, printer TestResultPrinter) error {
+func TestAll(execCmds []string, testdir string, printer TestResultPrinter) (bool, error) {
 	fs, err := ioutil.ReadDir(testdir)
 	if err != nil {
-		return errors.Wrap(err, "Failed to read test directory")
+		return false, errors.Wrap(err, "Failed to read test directory")
 	}
 
 	totalResult := totalTestResult{}
@@ -29,7 +29,7 @@ func TestAll(execCmds []string, testdir string, printer TestResultPrinter) error
 
 		t, err := loadTestCases(testdir, filename)
 		if err != nil {
-			return err
+			return false, err
 		}
 
 		totalResult.CaseCnt += len(t.Test)
@@ -37,7 +37,7 @@ func TestAll(execCmds []string, testdir string, printer TestResultPrinter) error
 			cmd := exec.Command(execCmds[0], execCmds[1:]...)
 			out, err := runTestCase(inout.In, cmd)
 			if err != nil {
-				return err
+				return false, err
 			}
 
 			if !strings.HasSuffix(inout.Out, "\n") {
@@ -67,7 +67,7 @@ func TestAll(execCmds []string, testdir string, printer TestResultPrinter) error
 	printer.ShowFailures(totalResult.Fails)
 	printer.ShowSummary(&totalResult)
 
-	return nil
+	return len(totalResult.Fails) == 0, nil
 }
 
 func loadTestCases(dir string, filename string) (tcs testCases, err error) {

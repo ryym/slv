@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/ryym/slv/slv"
 	"github.com/ryym/slv/slv/t"
 	"github.com/urfave/cli"
@@ -47,10 +49,13 @@ func cmdTest(c *cli.Context) error {
 		return cli.NewExitError(err.Error(), 1)
 	}
 
-	err = slv.TestAll(&conf)
+	ok, err := slv.TestAll(&conf)
 
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
+	}
+	if !ok {
+		os.Exit(1)
 	}
 	return nil
 }
