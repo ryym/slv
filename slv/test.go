@@ -1,6 +1,7 @@
 package slv
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -13,6 +14,8 @@ import (
 )
 
 func TestAll(c *t.ExecConf) (bool, error) {
+	fmt.Printf("testing %s...\n", c.SrcFile)
+
 	execCmds, err := findAndCompile(c)
 	if err != nil {
 		return false, err

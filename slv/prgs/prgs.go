@@ -2,28 +2,51 @@ package prgs
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 
 	"github.com/ryym/slv/slv/t"
 )
 
-func FindProgram(srcPath string) (t.Program, error) {
-	if _, err := os.Stat(srcPath); err != nil {
-		return nil, err
+func FindExtByLang(lang string) string {
+	pairs := []struct {
+		lang string
+		ext  string
+	}{
+		{"go", "go"},
+		{"ruby", "rb"},
+		{"scala", "scala"},
 	}
 
-	switch filepath.Ext(srcPath) {
-	case ".go":
-		return &ProgramGo{}, nil
-	case ".rb":
-		return &ProgramRuby{}, nil
-	case ".scala":
-		return &ProgramScala{}, nil
-	default:
+	for _, p := range pairs {
+		if p.lang == lang {
+			return "." + p.ext
+		}
+	}
+	return ""
+}
+
+func FindProgram(srcPath string) (t.Program, error) {
+	ext := filepath.Ext(srcPath)
+	prg := NewProgramByExt(ext)
+
+	if prg != nil {
+		return prg, nil
+	} else {
 		file := filepath.Base(srcPath)
 		return nil, fmt.Errorf("Unsupported source code: %s", file)
 	}
+}
+
+func NewProgramByExt(ext string) t.Program {
+	switch ext {
+	case ".go":
+		return &ProgramGo{}
+	case ".rb":
+		return &ProgramRuby{}
+	case ".scala":
+		return &ProgramScala{}
+	}
+	return nil
 }
 
 type ProgramGo struct{}

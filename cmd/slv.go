@@ -24,13 +24,13 @@ func CreateApp() *cli.App {
 		{
 			Name:      "test",
 			Usage:     "Run tests for the specified source code",
-			ArgsUsage: "[src]",
+			ArgsUsage: "[src|lang]",
 			Action:    cmdTest,
 		},
 		{
 			Name:      "compile",
 			Usage:     "Compile without running",
-			ArgsUsage: "[src]",
+			ArgsUsage: "[src|lang]",
 			Action:    cmdCompile,
 		},
 	}
@@ -52,7 +52,12 @@ func cmdTest(c *cli.Context) error {
 		cli.ShowCommandHelpAndExit(c, "test", 0)
 	}
 
-	conf, err := slv.MakeExecConf(c.Args()[0])
+	wd, err := os.Getwd()
+	if err != nil {
+		return cli.NewExitError(err.Error(), 1)
+	}
+
+	conf, err := slv.MakeExecConf(c.Args()[0], wd)
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
 	}
@@ -73,7 +78,12 @@ func cmdCompile(c *cli.Context) error {
 		cli.ShowCommandHelpAndExit(c, "compile", 0)
 	}
 
-	conf, err := slv.MakeExecConf(c.Args()[0])
+	wd, err := os.Getwd()
+	if err != nil {
+		return cli.NewExitError(err.Error(), 1)
+	}
+
+	conf, err := slv.MakeExecConf(c.Args()[0], wd)
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
 	}
@@ -84,9 +94,8 @@ func cmdCompile(c *cli.Context) error {
 	}
 
 	// Try to use relative path.
-	pwd, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err == nil {
-		relPath, err := filepath.Rel(pwd, execPath)
+		relPath, err := filepath.Rel(wd, execPath)
 		if err == nil && len(relPath) < len(execPath) {
 			execPath = relPath
 		}
