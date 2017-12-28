@@ -18,11 +18,19 @@ func GetRootPath(srcPath string) (string, error) {
 
 func IsProbDir(dir string) bool {
 	return fileutil.IsDir(dir) &&
-		fileutil.IsDir(filepath.Join(dir, ".slv")) &&
-		fileutil.IsDir(filepath.Join(dir, "src")) &&
-		fileutil.IsDir(filepath.Join(dir, "test"))
+		fileutil.IsDir(GetWorkDir(dir)) &&
+		fileutil.IsDir(GetSrcDir(dir)) &&
+		fileutil.IsDir(GetTestDir(dir))
 }
 
 func GetWorkDir(rootPath string) string {
 	return filepath.Join(rootPath, ".slv")
+}
+
+func GetSrcDir(rootPath string) string {
+	return filepath.Join(rootPath, "src")
+}
+
+func GetTestDir(rootPath string) string {
+	return filepath.Join(rootPath, "test")
 }
