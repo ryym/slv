@@ -1,34 +1,53 @@
 package test
 
-import "fmt"
+import (
+	"fmt"
 
-type defaultPrinter struct{}
+	"github.com/fatih/color"
+	diffmp "github.com/sergi/go-diff/diffmatchpatch"
+)
+
+type colorizer func(a ...interface{}) string
+
+type defaultPrinter struct {
+	colorBad  colorizer
+	colorGood colorizer
+}
 
 func NewResultPrinter() TestResultPrinter {
-	return &defaultPrinter{}
+	return &defaultPrinter{
+		colorBad:  color.New(color.FgRed).SprintFunc(),
+		colorGood: color.New(color.FgGreen).SprintFunc(),
+	}
 }
 
 func (p *defaultPrinter) ShowResult(ret *testResult) {
 	if ret.Ok {
 		fmt.Print(".")
 	} else {
-		fmt.Print("F")
+		fmt.Print(p.colorBad("F"))
 	}
 }
 
 func (p *defaultPrinter) ShowFailures(results []testResult) {
-	fmt.Println("")
+	fmt.Println("\n")
 	for _, r := range results {
 		tc := r.TestCase
 
-		// XXX: Should output diff text.
-		tmpl := `
-Case: %s
-- Expected:
-%s
-- Actual:
-%s`
-		fmt.Printf(tmpl, tc.Name, tc.Out, r.Actual)
+		fmt.Printf("%s:\n\n", tc.Name)
+
+		diffs := makeLineDiff(tc.Out, r.Actual)
+		for _, d := range diffs {
+			switch d.Type {
+			case diffmp.DiffDelete:
+				fmt.Print(p.colorBad("-" + d.Text))
+			case diffmp.DiffInsert:
+				fmt.Print(p.colorGood("+" + d.Text))
+			case diffmp.DiffEqual:
+				fmt.Print(d.Text)
+			}
+		}
+		fmt.Println("")
 	}
 }
 
@@ -46,4 +65,12 @@ func (p *defaultPrinter) ShowSummary(tr *totalTestResult) {
 		tr.PassedCnt,
 		len(tr.Fails),
 	)
+}
+
+// https://qiita.com/shibukawa/items/dd75ad01e623c4c1166b
+func makeLineDiff(s1, s2 string) []diffmp.Diff {
+	dmp := diffmp.New()
+	a, b, c := dmp.DiffLinesToChars(s1, s2)
+	diffs := dmp.DiffMain(a, b, false)
+	return dmp.DiffCharsToLines(diffs, c)
 }
