@@ -33,6 +33,12 @@ func CreateApp() *cli.App {
 			ArgsUsage: "[src|lang]",
 			Action:    cmdCompile,
 		},
+		{
+			Name:      "run",
+			Usage:     "Run the specified source code",
+			ArgsUsage: "[src|lang]",
+			Action:    cmdRun,
+		},
 	}
 	return app
 }
@@ -102,5 +108,28 @@ func cmdCompile(c *cli.Context) error {
 	}
 
 	fmt.Printf("Compiled to %s\n", execPath)
+	return nil
+}
+
+func cmdRun(c *cli.Context) error {
+	if c.NArg() != 1 {
+		cli.ShowCommandHelpAndExit(c, "run", 0)
+	}
+
+	wd, err := os.Getwd()
+	if err != nil {
+		return cli.NewExitError(err.Error(), 1)
+	}
+
+	conf, err := slv.MakeExecConf(c.Args()[0], wd)
+	if err != nil {
+		return cli.NewExitError(err.Error(), 1)
+	}
+
+	err = slv.Run(&conf)
+
+	if err != nil {
+		return cli.NewExitError(err.Error(), 1)
+	}
 	return nil
 }
