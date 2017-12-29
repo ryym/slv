@@ -16,7 +16,11 @@ func TestNewProblem(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer os.RemoveAll(dir)
-	os.Chdir(dir)
+
+	err = os.Chdir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	err = NewProblem(&tp.CmdNewOpts{Name: "hello"})
 	if err != nil {
