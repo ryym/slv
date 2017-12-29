@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/go-test/deep"
-	"github.com/ryym/slv/slv/t"
+	"github.com/ryym/slv/slv/tp"
 )
 
 func TestNewProblem(e *testing.T) {
@@ -18,7 +18,7 @@ func TestNewProblem(e *testing.T) {
 	defer os.RemoveAll(dir)
 	os.Chdir(dir)
 
-	err = NewProblem(&t.CmdNewOpts{Name: "hello"})
+	err = NewProblem(&tp.CmdNewOpts{Name: "hello"})
 	if err != nil {
 		e.Fatal(err)
 	}

@@ -4,10 +4,10 @@ import (
 	"os"
 
 	"github.com/pkg/errors"
-	"github.com/ryym/slv/slv/t"
+	"github.com/ryym/slv/slv/tp"
 )
 
-func NewProblem(opts *t.CmdNewOpts) (err error) {
+func NewProblem(opts *tp.CmdNewOpts) (err error) {
 	name := opts.Name
 	err = os.Mkdir(name, 0755)
 	if err != nil {

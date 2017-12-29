@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/ryym/slv/slv/t"
+	"github.com/ryym/slv/slv/tp"
 )
 
 func FindExtByLang(lang string) string {
@@ -25,7 +25,7 @@ func FindExtByLang(lang string) string {
 	return ""
 }
 
-func FindProgram(srcPath string) (t.Program, error) {
+func FindProgram(srcPath string) (tp.Program, error) {
 	ext := filepath.Ext(srcPath)
 	prg := NewProgramByExt(ext)
 
@@ -37,7 +37,7 @@ func FindProgram(srcPath string) (t.Program, error) {
 	}
 }
 
-func NewProgramByExt(ext string) t.Program {
+func NewProgramByExt(ext string) tp.Program {
 	switch ext {
 	case ".go":
 		return &ProgramGo{}
@@ -51,9 +51,9 @@ func NewProgramByExt(ext string) t.Program {
 
 type ProgramGo struct{}
 
-func (pg *ProgramGo) GetCompileCmds(src string, destDir string) t.CompileCmds {
+func (pg *ProgramGo) GetCompileCmds(src string, destDir string) tp.CompileCmds {
 	bin := filepath.Join(destDir, "out")
-	return t.CompileCmds{
+	return tp.CompileCmds{
 		Cmds:     []string{"go", "build", "-o", bin, src},
 		ExecPath: bin,
 	}
@@ -64,8 +64,8 @@ func (pg *ProgramGo) GetExecCmds(execPath string) []string {
 
 type ProgramRuby struct{}
 
-func (pg *ProgramRuby) GetCompileCmds(src string, _destDir string) t.CompileCmds {
-	return t.CompileCmds{
+func (pg *ProgramRuby) GetCompileCmds(src string, _destDir string) tp.CompileCmds {
+	return tp.CompileCmds{
 		Cmds:     nil,
 		ExecPath: src,
 	}
@@ -76,8 +76,8 @@ func (pg *ProgramRuby) GetExecCmds(execPath string) []string {
 
 type ProgramScala struct{}
 
-func (pg *ProgramScala) GetCompileCmds(src string, destDir string) t.CompileCmds {
-	return t.CompileCmds{
+func (pg *ProgramScala) GetCompileCmds(src string, destDir string) tp.CompileCmds {
+	return tp.CompileCmds{
 		Cmds:     []string{"scalac", "-d", destDir, src},
 		ExecPath: destDir,
 	}

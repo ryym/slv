@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/ryym/slv/slv"
-	"github.com/ryym/slv/slv/t"
+	"github.com/ryym/slv/slv/tp"
 	"github.com/urfave/cli"
 )
 
@@ -48,7 +48,7 @@ func cmdNew(c *cli.Context) error {
 		cli.ShowCommandHelpAndExit(c, "new", 0)
 	}
 	name := c.Args()[0]
-	return slv.NewProblem(&t.CmdNewOpts{
+	return slv.NewProblem(&tp.CmdNewOpts{
 		Name: name,
 	})
 }

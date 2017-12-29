@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/ryym/slv/slv/t"
 	"github.com/ryym/slv/slv/test"
+	"github.com/ryym/slv/slv/tp"
 )
 
-func TestAll(c *t.ExecConf) (bool, error) {
+func TestAll(c *tp.ExecConf) (bool, error) {
 	fmt.Printf("testing %s...\n", c.SrcFile)
 
 	execCmds, err := findAndCompile(c)

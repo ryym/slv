@@ -9,10 +9,10 @@ import (
 	"github.com/pkg/errors"
 	"github.com/ryym/slv/slv/prgs"
 	"github.com/ryym/slv/slv/probdir"
-	"github.com/ryym/slv/slv/t"
+	"github.com/ryym/slv/slv/tp"
 )
 
-func MakeExecConf(pathOrLang string, baseDir string) (conf t.ExecConf, err error) {
+func MakeExecConf(pathOrLang string, baseDir string) (conf tp.ExecConf, err error) {
 	srcPath, err := findSrc(pathOrLang, baseDir)
 	if err != nil {
 		return conf, err
@@ -23,7 +23,7 @@ func MakeExecConf(pathOrLang string, baseDir string) (conf t.ExecConf, err error
 		return conf, err
 	}
 
-	return t.ExecConf{
+	return tp.ExecConf{
 		Probdir: pbd,
 	}, nil
 }

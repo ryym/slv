@@ -1,7 +1,7 @@
 // This package defines all structs and interfaces
 // used in other several packages to avoid cyclic imports.
 
-package t
+package tp
 
 type CmdNewOpts struct {
 	Name string

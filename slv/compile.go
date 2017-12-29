@@ -5,10 +5,10 @@ import (
 
 	"github.com/ryym/slv/slv/prgs"
 	"github.com/ryym/slv/slv/probdir"
-	"github.com/ryym/slv/slv/t"
+	"github.com/ryym/slv/slv/tp"
 )
 
-func Compile(c *t.ExecConf) (string, error) {
+func Compile(c *tp.ExecConf) (string, error) {
 	prg, err := prgs.FindProgram(c.SrcPath)
 	if err != nil {
 		return "", err

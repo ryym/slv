@@ -5,10 +5,10 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/ryym/slv/slv/t"
+	"github.com/ryym/slv/slv/tp"
 )
 
-func Run(c *t.ExecConf) error {
+func Run(c *tp.ExecConf) error {
 	fmt.Printf("running %s...\n", c.SrcFile)
 
 	execCmds, err := findAndCompile(c)

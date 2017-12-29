@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/ryym/slv/slv/t"
+	"github.com/ryym/slv/slv/tp"
 )
 
-func NewFromSrcPath(srcPath string) (pbd t.Probdir, err error) {
+func NewFromSrcPath(srcPath string) (pbd tp.Probdir, err error) {
 	srcPath, err = filepath.Abs(srcPath)
 	if err != nil {
 		return pbd, nil
@@ -18,7 +18,7 @@ func NewFromSrcPath(srcPath string) (pbd t.Probdir, err error) {
 		return pbd, err
 	}
 
-	return t.Probdir{
+	return tp.Probdir{
 		RootDir: root,
 		SrcFile: filepath.Base(srcPath),
 		SrcPath: srcPath,
@@ -26,6 +26,6 @@ func NewFromSrcPath(srcPath string) (pbd t.Probdir, err error) {
 	}, nil
 }
 
-func GetDestDir(c *t.ExecConf) string {
+func GetDestDir(c *tp.ExecConf) string {
 	return fmt.Sprintf("%s/%s.built", c.WorkDir, c.SrcFile)
 }
