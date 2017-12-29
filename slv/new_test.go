@@ -10,22 +10,22 @@ import (
 	"github.com/ryym/slv/slv/tp"
 )
 
-func TestNewProblem(e *testing.T) {
+func TestNewProblem(t *testing.T) {
 	dir, err := ioutil.TempDir("", "slv")
 	if err != nil {
-		e.Fatal(err)
+		t.Fatal(err)
 	}
 	defer os.RemoveAll(dir)
 	os.Chdir(dir)
 
 	err = NewProblem(&tp.CmdNewOpts{Name: "hello"})
 	if err != nil {
-		e.Fatal(err)
+		t.Fatal(err)
 	}
 
 	fs, err := ioutil.ReadDir(filepath.Join(dir, "hello"))
 	if err != nil {
-		e.Fatal(err)
+		t.Fatal(err)
 	}
 
 	names := make([]string, len(fs))
@@ -35,6 +35,6 @@ func TestNewProblem(e *testing.T) {
 
 	expected := []string{".slv", "src", "test"}
 	if diff := deep.Equal(names, expected); diff != nil {
-		e.Error(diff)
+		t.Error(diff)
 	}
 }
