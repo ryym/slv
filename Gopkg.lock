@@ -14,6 +14,12 @@
   version = "v1.5.0"
 
 [[projects]]
+  name = "github.com/go-test/deep"
+  packages = ["."]
+  revision = "9898238679c264cfb10411539f14a0553dc8b295"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/mattn/go-colorable"
   packages = ["."]
   revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
@@ -52,6 +58,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3413fc1fb719cd736ea884b5861cf15e66d94f04134de289e07b7b3d4a30e150"
+  inputs-digest = "8d132073f7b55a13dc43e75ec74df87764d736021246447bd104cadafa85481a"
   solver-name = "gps-cdcl"
   solver-version = 1
