@@ -8,7 +8,7 @@ before_script:
   - dep ensure
 
 script:
-  - go build main.go # TMP
+  - go test ./...
 
 notifications:
   email: false
