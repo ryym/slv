@@ -7,9 +7,7 @@ import (
 	"github.com/ryym/slv/slv/t"
 )
 
-func Def() {}
-
-func MakeDir(opts t.CmdNewOpts) (err error) {
+func NewProblem(opts *t.CmdNewOpts) (err error) {
 	name := opts.Name
 	err = os.Mkdir(name, 0755)
 	if err != nil {

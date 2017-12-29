@@ -48,7 +48,7 @@ func cmdNew(c *cli.Context) error {
 		cli.ShowCommandHelpAndExit(c, "new", 0)
 	}
 	name := c.Args()[0]
-	return slv.MakeDir(t.CmdNewOpts{
+	return slv.NewProblem(&t.CmdNewOpts{
 		Name: name,
 	})
 }
