@@ -18,7 +18,7 @@ type ExecConf struct {
 	Probdir
 }
 
-type Program interface {
+type ProgramCmds interface {
 	GetCompileCmds(srcPath string, destDir string) CompileCmds
 	GetExecCmds(execPath string) []string
 }

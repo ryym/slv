@@ -25,7 +25,7 @@ func FindExtByLang(lang string) string {
 	return ""
 }
 
-func FindProgram(srcPath string) (tp.Program, error) {
+func FindProgram(srcPath string) (tp.ProgramCmds, error) {
 	ext := filepath.Ext(srcPath)
 	prg := NewProgramByExt(ext)
 
@@ -37,52 +37,52 @@ func FindProgram(srcPath string) (tp.Program, error) {
 	}
 }
 
-func NewProgramByExt(ext string) tp.Program {
+func NewProgramByExt(ext string) tp.ProgramCmds {
 	switch ext {
 	case ".go":
-		return &ProgramGo{}
+		return &cmdsGo{}
 	case ".rb":
-		return &ProgramRuby{}
+		return &cmdsRuby{}
 	case ".scala":
-		return &ProgramScala{}
+		return &cmdsScala{}
 	}
 	return nil
 }
 
-type ProgramGo struct{}
+type cmdsGo struct{}
 
-func (pg *ProgramGo) GetCompileCmds(src string, destDir string) tp.CompileCmds {
+func (pg *cmdsGo) GetCompileCmds(src string, destDir string) tp.CompileCmds {
 	bin := filepath.Join(destDir, "out")
 	return tp.CompileCmds{
 		Cmds:     []string{"go", "build", "-o", bin, src},
 		ExecPath: bin,
 	}
 }
-func (pg *ProgramGo) GetExecCmds(execPath string) []string {
+func (pg *cmdsGo) GetExecCmds(execPath string) []string {
 	return []string{execPath}
 }
 
-type ProgramRuby struct{}
+type cmdsRuby struct{}
 
-func (pg *ProgramRuby) GetCompileCmds(src string, _destDir string) tp.CompileCmds {
+func (pg *cmdsRuby) GetCompileCmds(src string, _destDir string) tp.CompileCmds {
 	return tp.CompileCmds{
 		Cmds:     nil,
 		ExecPath: src,
 	}
 }
-func (pg *ProgramRuby) GetExecCmds(execPath string) []string {
+func (pg *cmdsRuby) GetExecCmds(execPath string) []string {
 	return []string{"ruby", execPath}
 }
 
-type ProgramScala struct{}
+type cmdsScala struct{}
 
-func (pg *ProgramScala) GetCompileCmds(src string, destDir string) tp.CompileCmds {
+func (pg *cmdsScala) GetCompileCmds(src string, destDir string) tp.CompileCmds {
 	return tp.CompileCmds{
 		Cmds:     []string{"scalac", "-d", destDir, src},
 		ExecPath: destDir,
 	}
 }
-func (pg *ProgramScala) GetExecCmds(execPath string) []string {
+func (pg *cmdsScala) GetExecCmds(execPath string) []string {
 	// It is better if users can configure output class name
 	// (currently 'Main').
 	return []string{"scala", "-cp", execPath, "Main"}
