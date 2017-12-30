@@ -14,7 +14,7 @@ type defaultPrinter struct {
 	colorGood colorizer
 }
 
-func NewResultPrinter() TestResultPrinter {
+func newResultPrinter() testResultPrinter {
 	return &defaultPrinter{
 		colorBad:  color.New(color.FgRed).SprintFunc(),
 		colorGood: color.New(color.FgGreen).SprintFunc(),

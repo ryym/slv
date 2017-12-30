@@ -16,6 +16,5 @@ func TestAll(app *tp.Slv) (bool, error) {
 		return false, err
 	}
 
-	printer := test.NewResultPrinter()
-	return test.TestAll(prg, pd.TestDir(), printer)
+	return test.TestAll(prg, pd.TestDir())
 }

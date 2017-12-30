@@ -1,5 +1,10 @@
 package test
 
+type testLoader interface {
+	ListFileNames() ([]string, error)
+	Load(filename string) ([]testCase, error)
+}
+
 type testCase struct {
 	Name string
 	In   string
@@ -23,7 +28,7 @@ type totalTestResult struct {
 	Fails     []testResult
 }
 
-type TestResultPrinter interface {
+type testResultPrinter interface {
 	ShowResult(result *testResult)
 	ShowFailures(cases []testResult)
 	ShowSummary(total *totalTestResult)

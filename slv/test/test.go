@@ -2,52 +2,47 @@ package test
 
 import (
 	"fmt"
-	"io/ioutil"
-	"os"
-	"path/filepath"
 	"strings"
 
-	"github.com/BurntSushi/toml"
-	"github.com/pkg/errors"
 	"github.com/ryym/slv/slv/tp"
 )
 
-func TestAll(prg tp.Program, testdir string, printer TestResultPrinter) (bool, error) {
-	fs, err := ioutil.ReadDir(testdir)
+func TestAll(prg tp.Program, testDir string) (bool, error) {
+	printer := newResultPrinter()
+	loader := newTestLoader(testDir)
+	return testAll(prg, loader, printer)
+}
+
+func testAll(prg tp.Program, loader testLoader, printer testResultPrinter) (bool, error) {
+	testFiles, err := loader.ListFileNames()
 	if err != nil {
-		return false, errors.Wrap(err, "Failed to read test directory")
+		return false, err
 	}
 
 	totalResult := totalTestResult{}
-
-	for _, entry := range fs {
-		filename := entry.Name()
-		if entry.IsDir() || !strings.HasSuffix(filename, ".toml") {
-			continue
-		}
-
-		t, err := loadTestCases(testdir, filename)
+	for _, filename := range testFiles {
+		cases, err := loader.Load(filename)
 		if err != nil {
 			return false, err
 		}
 
-		totalResult.CaseCnt += len(t.Test)
-		for i, inout := range t.Test {
-			out, err := prg.Run(inout.In)
+		totalResult.CaseCnt += len(cases)
+		for i, tcase := range cases {
+			out, err := prg.Run(tcase.In)
 			if err != nil {
 				return false, err
 			}
 
-			if !strings.HasSuffix(inout.Out, "\n") {
-				inout.Out += "\n"
+			if !strings.HasSuffix(tcase.Out, "\n") {
+				tcase.Out += "\n"
 			}
-			if inout.Name == "" {
-				inout.Name = fmt.Sprintf("%s[%d]", filename, i)
+			if tcase.Name == "" {
+				tcase.Name = fmt.Sprintf("%s[%d]", filename, i)
 			}
 
 			result := testResult{
-				Ok:       inout.Out == out,
-				TestCase: inout,
+				Ok:       tcase.Out == out,
+				TestCase: tcase,
 				Actual:   out,
 				Filename: filename,
 			}
@@ -66,23 +61,4 @@ func TestAll(prg tp.Program, testdir string, printer TestResultPrinter) (bool, e
 	printer.ShowSummary(&totalResult)
 
 	return len(totalResult.Fails) == 0, nil
-}
-
-func loadTestCases(dir string, filename string) (tcs testCases, err error) {
-	tomlFile, err := os.Open(filepath.Join(dir, filename))
-	if err != nil {
-		return tcs, errors.Wrapf(err, "Failed to open %s", filename)
-	}
-
-	tomlData, err := ioutil.ReadAll(tomlFile)
-	if err != nil {
-		return tcs, errors.Wrapf(err, "Failed to read %s", filename)
-	}
-
-	err = toml.Unmarshal(tomlData, &tcs)
-	if err != nil {
-		return tcs, errors.Wrapf(err, "Failed to parse TOML content of %s", filename)
-	}
-
-	return tcs, nil
 }
