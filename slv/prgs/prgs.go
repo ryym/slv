@@ -40,49 +40,49 @@ func FindProgram(srcPath string) (tp.ProgramCmds, error) {
 func NewProgramByExt(ext string) tp.ProgramCmds {
 	switch ext {
 	case ".go":
-		return &cmdsGo{}
+		return &oldCmdsGo{}
 	case ".rb":
-		return &cmdsRuby{}
+		return &oldCmdsRuby{}
 	case ".scala":
-		return &cmdsScala{}
+		return &oldCmdsScala{}
 	}
 	return nil
 }
 
-type cmdsGo struct{}
+type oldCmdsGo struct{}
 
-func (pg *cmdsGo) GetCompileCmds(src string, destDir string) tp.CompileCmds {
+func (pg *oldCmdsGo) GetCompileCmds(src string, destDir string) tp.CompileCmds {
 	bin := filepath.Join(destDir, "out")
 	return tp.CompileCmds{
 		Cmds:     []string{"go", "build", "-o", bin, src},
 		ExecPath: bin,
 	}
 }
-func (pg *cmdsGo) GetExecCmds(execPath string) []string {
+func (pg *oldCmdsGo) GetExecCmds(execPath string) []string {
 	return []string{execPath}
 }
 
-type cmdsRuby struct{}
+type oldCmdsRuby struct{}
 
-func (pg *cmdsRuby) GetCompileCmds(src string, _destDir string) tp.CompileCmds {
+func (pg *oldCmdsRuby) GetCompileCmds(src string, _destDir string) tp.CompileCmds {
 	return tp.CompileCmds{
 		Cmds:     nil,
 		ExecPath: src,
 	}
 }
-func (pg *cmdsRuby) GetExecCmds(execPath string) []string {
+func (pg *oldCmdsRuby) GetExecCmds(execPath string) []string {
 	return []string{"ruby", execPath}
 }
 
-type cmdsScala struct{}
+type oldCmdsScala struct{}
 
-func (pg *cmdsScala) GetCompileCmds(src string, destDir string) tp.CompileCmds {
+func (pg *oldCmdsScala) GetCompileCmds(src string, destDir string) tp.CompileCmds {
 	return tp.CompileCmds{
 		Cmds:     []string{"scalac", "-d", destDir, src},
 		ExecPath: destDir,
 	}
 }
-func (pg *cmdsScala) GetExecCmds(execPath string) []string {
+func (pg *oldCmdsScala) GetExecCmds(execPath string) []string {
 	// It is better if users can configure output class name
 	// (currently 'Main').
 	return []string{"scala", "-cp", execPath, "Main"}
