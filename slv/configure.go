@@ -18,13 +18,16 @@ func NewSlvApp(pathOrLang string, baseDir string) (slv tp.Slv, err error) {
 		return slv, err
 	}
 
-	pd, err := probdir.NewProbDir(srcPath)
+	probDir, err := probdir.NewProbDir(srcPath)
 	if err != nil {
 		return slv, err
 	}
 
+	programFactory := prgs.NewProgramFactory()
+
 	return tp.Slv{
-		ProbDir: pd,
+		ProbDir: probDir,
+		Program: programFactory,
 	}, nil
 }
 

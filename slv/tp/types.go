@@ -23,16 +23,6 @@ type ProbDir interface {
 	SrcPath() string
 }
 
-type ProgramCmds interface {
-	GetCompileCmds(srcPath string, destDir string) CompileCmds
-	GetExecCmds(execPath string) []string
-}
-
-type CompileCmds struct {
-	Cmds     []string
-	ExecPath string
-}
-
 // XXX: Should be a single function type?
 type ProgramFactory interface {
 	NewProgram(srcPath string, destDir string) (Program, error)

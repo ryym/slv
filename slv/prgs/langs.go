@@ -2,6 +2,24 @@ package prgs
 
 import "path/filepath"
 
+func FindExtByLang(lang string) string {
+	pairs := []struct {
+		lang string
+		ext  string
+	}{
+		{"go", "go"},
+		{"ruby", "rb"},
+		{"scala", "scala"},
+	}
+
+	for _, p := range pairs {
+		if p.lang == lang {
+			return "." + p.ext
+		}
+	}
+	return ""
+}
+
 func newProgramDef(fileName string) programDef {
 	switch filepath.Ext(fileName) {
 	case ".go":

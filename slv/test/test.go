@@ -2,18 +2,17 @@ package test
 
 import (
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 
 	"github.com/BurntSushi/toml"
 	"github.com/pkg/errors"
+	"github.com/ryym/slv/slv/tp"
 )
 
-func TestAll(execCmds []string, testdir string, printer TestResultPrinter) (bool, error) {
+func TestAll(prg tp.Program, testdir string, printer TestResultPrinter) (bool, error) {
 	fs, err := ioutil.ReadDir(testdir)
 	if err != nil {
 		return false, errors.Wrap(err, "Failed to read test directory")
@@ -34,8 +33,7 @@ func TestAll(execCmds []string, testdir string, printer TestResultPrinter) (bool
 
 		totalResult.CaseCnt += len(t.Test)
 		for i, inout := range t.Test {
-			cmd := exec.Command(execCmds[0], execCmds[1:]...)
-			out, err := runTestCase(inout.In, cmd)
+			out, err := prg.Run(inout.In)
 			if err != nil {
 				return false, err
 			}
@@ -87,23 +85,4 @@ func loadTestCases(dir string, filename string) (tcs testCases, err error) {
 	}
 
 	return tcs, nil
-}
-
-func runTestCase(input string, cmd *exec.Cmd) (actual string, err error) {
-	stdin, err := cmd.StdinPipe()
-	if err != nil {
-		return "", errors.Wrap(err, "Failed to pipe stdin")
-	}
-
-	go func() {
-		defer stdin.Close()
-		io.WriteString(stdin, input)
-	}()
-
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		return "", errors.Wrap(err, string(out))
-	}
-
-	return string(out), nil
 }

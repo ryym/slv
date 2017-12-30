@@ -11,11 +11,11 @@ func TestAll(app *tp.Slv) (bool, error) {
 	pd := app.ProbDir
 	fmt.Printf("testing %s...\n", pd.SrcFile())
 
-	execCmds, err := findAndCompile(pd.SrcPath(), pd.DestDir())
+	prg, err := app.Program.NewProgram(pd.SrcPath(), pd.DestDir())
 	if err != nil {
 		return false, err
 	}
 
 	printer := test.NewResultPrinter()
-	return test.TestAll(execCmds, pd.TestDir(), printer)
+	return test.TestAll(prg, pd.TestDir(), printer)
 }
