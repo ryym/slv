@@ -25,7 +25,6 @@ type ProbDir interface {
 	SrcPath() string
 }
 
-// XXX: Should be a single function type?
 type ProgramFactory interface {
 	NewProgram(srcPath string, destDir string) (Program, error)
 }
