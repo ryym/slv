@@ -9,7 +9,11 @@ import (
 	"github.com/ryym/slv/slv/tp"
 )
 
-const SRC_DIR = "src"
+const (
+	WORK_DIR = ".slv"
+	SRC_DIR  = "src"
+	TEST_DIR = "test"
+)
 
 func NewProbDir(srcPath string) (pd tp.ProbDir, err error) {
 	srcPath, err = filepath.Abs(srcPath)
@@ -35,7 +39,7 @@ type probDirImpl struct {
 }
 
 func (pd *probDirImpl) WorkDir() string {
-	return filepath.Join(pd.rootDir, ".slv")
+	return filepath.Join(pd.rootDir, WORK_DIR)
 }
 
 func (pd *probDirImpl) SrcDir() string {
@@ -43,7 +47,7 @@ func (pd *probDirImpl) SrcDir() string {
 }
 
 func (pd *probDirImpl) TestDir() string {
-	return filepath.Join(pd.rootDir, "test")
+	return filepath.Join(pd.rootDir, TEST_DIR)
 }
 
 func (pd *probDirImpl) DestDir() string {
