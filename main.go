@@ -3,10 +3,10 @@ package main
 import (
 	"os"
 
-	"github.com/ryym/slv/cmd"
+	"github.com/ryym/slv/cli"
 )
 
 func main() {
-	app := cmd.CreateApp()
+	app := cli.CreateApp()
 	app.Run(os.Args)
 }

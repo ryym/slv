@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/ryym/slv/cmd"
+	"github.com/ryym/slv/cli"
 )
 
 const SRC = `package main
@@ -38,7 +38,7 @@ func TestBasicFlow(t *testing.T) {
 	err = os.Chdir(dir)
 	fatalIf(err, t)
 
-	app := cmd.CreateApp()
+	app := cli.CreateApp()
 
 	err = app.Run([]string{"slv", "new", "hello"})
 	fatalIf(err, t)
