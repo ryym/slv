@@ -1,11 +1,6 @@
 package prgs
 
-import (
-	"fmt"
-	"path/filepath"
-
-	"github.com/ryym/slv/slv/tp"
-)
+import "path/filepath"
 
 func FindExtByLang(lang string) string {
 	pairs := []struct {
@@ -25,20 +20,8 @@ func FindExtByLang(lang string) string {
 	return ""
 }
 
-func FindProgram(srcPath string) (tp.ProgramCmds, error) {
-	ext := filepath.Ext(srcPath)
-	prg := NewProgramByExt(ext)
-
-	if prg != nil {
-		return prg, nil
-	} else {
-		file := filepath.Base(srcPath)
-		return nil, fmt.Errorf("Unsupported source code: %s", file)
-	}
-}
-
-func NewProgramByExt(ext string) tp.ProgramCmds {
-	switch ext {
+func newProgramDef(fileName string) programDef {
+	switch filepath.Ext(fileName) {
 	case ".go":
 		return &cmdsGo{}
 	case ".rb":
@@ -51,9 +34,9 @@ func NewProgramByExt(ext string) tp.ProgramCmds {
 
 type cmdsGo struct{}
 
-func (pg *cmdsGo) GetCompileCmds(src string, destDir string) tp.CompileCmds {
+func (pg *cmdsGo) GetCompileCmds(src string, destDir string) compileCmds {
 	bin := filepath.Join(destDir, "out")
-	return tp.CompileCmds{
+	return compileCmds{
 		Cmds:     []string{"go", "build", "-o", bin, src},
 		ExecPath: bin,
 	}
@@ -64,8 +47,8 @@ func (pg *cmdsGo) GetExecCmds(execPath string) []string {
 
 type cmdsRuby struct{}
 
-func (pg *cmdsRuby) GetCompileCmds(src string, _destDir string) tp.CompileCmds {
-	return tp.CompileCmds{
+func (pg *cmdsRuby) GetCompileCmds(src string, _destDir string) compileCmds {
+	return compileCmds{
 		Cmds:     nil,
 		ExecPath: src,
 	}
@@ -76,8 +59,8 @@ func (pg *cmdsRuby) GetExecCmds(execPath string) []string {
 
 type cmdsScala struct{}
 
-func (pg *cmdsScala) GetCompileCmds(src string, destDir string) tp.CompileCmds {
-	return tp.CompileCmds{
+func (pg *cmdsScala) GetCompileCmds(src string, destDir string) compileCmds {
+	return compileCmds{
 		Cmds:     []string{"scalac", "-d", destDir, src},
 		ExecPath: destDir,
 	}

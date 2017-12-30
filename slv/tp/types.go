@@ -3,27 +3,39 @@
 
 package tp
 
+//go:generate moq -out mocks.go . Program
+
+import "io"
+
 type CmdNewOpts struct {
 	Name string
 }
 
-type Probdir struct {
-	RootDir string
-	SrcFile string
-	SrcPath string
-	WorkDir string
+type Slv struct {
+	ProbDir ProbDir
+	Program ProgramFactory
 }
 
-type ExecConf struct {
-	Probdir
+type ProbDir interface {
+	WorkDir() string
+	SrcDir() string
+	TestDir() string
+	DestDir() string
+	SrcFile() string
+	SrcPath() string
 }
 
-type ProgramCmds interface {
-	GetCompileCmds(srcPath string, destDir string) CompileCmds
-	GetExecCmds(execPath string) []string
+type ProgramFactory interface {
+	NewProgram(srcPath string, destDir string) (Program, error)
 }
 
-type CompileCmds struct {
-	Cmds     []string
+type CompileResult struct {
+	Compiled bool
 	ExecPath string
+}
+
+type Program interface {
+	Compile() (CompileResult, error)
+	Run(input string) (string, error)
+	RunWithPipes(stdin io.ReadCloser, stdout io.WriteCloser) error
 }

@@ -63,12 +63,12 @@ func cmdTest(c *cli.Context) error {
 		return cli.NewExitError(err.Error(), 1)
 	}
 
-	conf, err := slv.MakeExecConf(c.Args()[0], wd)
+	app, err := slv.NewSlvApp(c.Args()[0], wd)
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
 	}
 
-	ok, err := slv.TestAll(&conf)
+	ok, err := slv.TestAll(&app)
 
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
@@ -89,12 +89,12 @@ func cmdCompile(c *cli.Context) error {
 		return cli.NewExitError(err.Error(), 1)
 	}
 
-	conf, err := slv.MakeExecConf(c.Args()[0], wd)
+	app, err := slv.NewSlvApp(c.Args()[0], wd)
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
 	}
 
-	execPath, err := slv.Compile(&conf)
+	execPath, err := slv.Compile(&app)
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
 	}
@@ -121,12 +121,12 @@ func cmdRun(c *cli.Context) error {
 		return cli.NewExitError(err.Error(), 1)
 	}
 
-	conf, err := slv.MakeExecConf(c.Args()[0], wd)
+	app, err := slv.NewSlvApp(c.Args()[0], wd)
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
 	}
 
-	err = slv.Run(&conf)
+	err = slv.Run(&app)
 
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)

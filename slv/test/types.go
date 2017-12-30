@@ -1,5 +1,12 @@
 package test
 
+//go:generate moq -out types_test.go . testLoader testResultHandler
+
+type testLoader interface {
+	ListFileNames() ([]string, error)
+	Load(filename string) ([]testCase, error)
+}
+
 type testCase struct {
 	Name string
 	In   string
@@ -20,11 +27,10 @@ type testResult struct {
 type totalTestResult struct {
 	CaseCnt   int
 	PassedCnt int
-	Fails     []testResult
+	Fails     []*testResult
 }
 
-type TestResultPrinter interface {
-	ShowResult(result *testResult)
-	ShowFailures(cases []testResult)
-	ShowSummary(total *totalTestResult)
+type testResultHandler interface {
+	OnCaseEnd(result *testResult)
+	OnEnd(total *totalTestResult)
 }

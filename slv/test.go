@@ -2,21 +2,19 @@ package slv
 
 import (
 	"fmt"
-	"path/filepath"
 
 	"github.com/ryym/slv/slv/test"
 	"github.com/ryym/slv/slv/tp"
 )
 
-func TestAll(c *tp.ExecConf) (bool, error) {
-	fmt.Printf("testing %s...\n", c.SrcFile)
+func TestAll(app *tp.Slv) (bool, error) {
+	pd := app.ProbDir
+	fmt.Printf("testing %s...\n", pd.SrcFile())
 
-	execCmds, err := findAndCompile(c)
+	prg, err := app.Program.NewProgram(pd.SrcPath(), pd.DestDir())
 	if err != nil {
 		return false, err
 	}
 
-	testdir := filepath.Join(c.RootDir, "test")
-	printer := test.NewResultPrinter()
-	return test.TestAll(execCmds, testdir, printer)
+	return test.TestAll(prg, pd.TestDir())
 }
