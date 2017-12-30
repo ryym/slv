@@ -3,6 +3,8 @@
 
 package tp
 
+//go:generate moq -out mocks.go . Program
+
 import "io"
 
 type CmdNewOpts struct {

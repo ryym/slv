@@ -1,5 +1,7 @@
 package test
 
+//go:generate moq -out types_test.go . testLoader testResultHandler
+
 type testLoader interface {
 	ListFileNames() ([]string, error)
 	Load(filename string) ([]testCase, error)

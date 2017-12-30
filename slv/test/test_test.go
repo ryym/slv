@@ -35,11 +35,11 @@ func Test_testAll(t *testing.T) {
 		},
 	}
 
-	loader := &FkTestLoader{
-		FkListFileNames: func() ([]string, error) {
+	loader := &testLoaderMock{
+		ListFileNamesFunc: func() ([]string, error) {
 			return []string{"test.toml"}, nil
 		},
-		FkLoad: func(_ string) ([]testCase, error) {
+		LoadFunc: func(_ string) ([]testCase, error) {
 			return cases, nil
 		},
 	}
@@ -47,17 +47,17 @@ func Test_testAll(t *testing.T) {
 	var results []*testResult
 	var total *totalTestResult
 
-	handler := &FkTestResultHandler{
-		FkOnCaseEnd: func(ret *testResult) {
+	handler := &testResultHandlerMock{
+		OnCaseEndFunc: func(ret *testResult) {
 			results = append(results, ret)
 		},
-		FkOnEnd: func(t *totalTestResult) {
+		OnEndFunc: func(t *totalTestResult) {
 			total = t
 		},
 	}
 
-	prg := &tp.FkProgram{
-		FkRun: func(in string) (string, error) {
+	prg := &tp.ProgramMock{
+		RunFunc: func(in string) (string, error) {
 			return in + "!", nil
 		},
 	}
