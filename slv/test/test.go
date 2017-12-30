@@ -13,7 +13,7 @@ func TestAll(prg tp.Program, testDir string) (bool, error) {
 	return testAll(prg, loader, printer)
 }
 
-func testAll(prg tp.Program, loader testLoader, printer testResultPrinter) (bool, error) {
+func testAll(prg tp.Program, loader testLoader, handler testResultHandler) (bool, error) {
 	testFiles, err := loader.ListFileNames()
 	if err != nil {
 		return false, err
@@ -47,7 +47,7 @@ func testAll(prg tp.Program, loader testLoader, printer testResultPrinter) (bool
 				Filename: filename,
 			}
 
-			printer.ShowResult(&result)
+			handler.OnCaseEnd(&result)
 
 			if result.Ok {
 				totalResult.PassedCnt += 1
@@ -57,8 +57,7 @@ func testAll(prg tp.Program, loader testLoader, printer testResultPrinter) (bool
 		}
 	}
 
-	printer.ShowFailures(totalResult.Fails)
-	printer.ShowSummary(&totalResult)
+	handler.OnEnd(&totalResult)
 
 	return len(totalResult.Fails) == 0, nil
 }

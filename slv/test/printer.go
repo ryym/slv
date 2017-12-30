@@ -9,19 +9,19 @@ import (
 
 type colorizer func(a ...interface{}) string
 
-type defaultPrinter struct {
+type resultPrinter struct {
 	colorBad  colorizer
 	colorGood colorizer
 }
 
-func newResultPrinter() testResultPrinter {
-	return &defaultPrinter{
+func newResultPrinter() *resultPrinter {
+	return &resultPrinter{
 		colorBad:  color.New(color.FgRed).SprintFunc(),
 		colorGood: color.New(color.FgGreen).SprintFunc(),
 	}
 }
 
-func (p *defaultPrinter) ShowResult(ret *testResult) {
+func (p *resultPrinter) OnCaseEnd(ret *testResult) {
 	if ret.Ok {
 		fmt.Print(".")
 	} else {
@@ -29,7 +29,12 @@ func (p *defaultPrinter) ShowResult(ret *testResult) {
 	}
 }
 
-func (p *defaultPrinter) ShowFailures(results []testResult) {
+func (p *resultPrinter) OnEnd(total *totalTestResult) {
+	p.showFailures(total.Fails)
+	p.showSummary(total)
+}
+
+func (p *resultPrinter) showFailures(results []testResult) {
 	fmt.Println("\n")
 	for _, r := range results {
 		tc := r.TestCase
@@ -51,7 +56,7 @@ func (p *defaultPrinter) ShowFailures(results []testResult) {
 	}
 }
 
-func (p *defaultPrinter) ShowSummary(tr *totalTestResult) {
+func (p *resultPrinter) showSummary(tr *totalTestResult) {
 	var title string
 	if len(tr.Fails) == 0 {
 		title = "OK"

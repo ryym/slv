@@ -28,8 +28,7 @@ type totalTestResult struct {
 	Fails     []testResult
 }
 
-type testResultPrinter interface {
-	ShowResult(result *testResult)
-	ShowFailures(cases []testResult)
-	ShowSummary(total *totalTestResult)
+type testResultHandler interface {
+	OnCaseEnd(result *testResult)
+	OnEnd(total *totalTestResult)
 }
