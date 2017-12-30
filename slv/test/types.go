@@ -25,7 +25,7 @@ type testResult struct {
 type totalTestResult struct {
 	CaseCnt   int
 	PassedCnt int
-	Fails     []testResult
+	Fails     []*testResult
 }
 
 type testResultHandler interface {

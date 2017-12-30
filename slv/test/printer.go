@@ -34,7 +34,7 @@ func (p *resultPrinter) OnEnd(total *totalTestResult) {
 	p.showSummary(total)
 }
 
-func (p *resultPrinter) showFailures(results []testResult) {
+func (p *resultPrinter) showFailures(results []*testResult) {
 	fmt.Println("\n")
 	for _, r := range results {
 		tc := r.TestCase

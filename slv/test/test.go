@@ -33,7 +33,7 @@ func testAll(prg tp.Program, loader testLoader, handler testResultHandler) (bool
 				return false, err
 			}
 
-			if !strings.HasSuffix(tcase.Out, "\n") {
+			if strings.HasSuffix(out, "\n") && !strings.HasSuffix(tcase.Out, "\n") {
 				tcase.Out += "\n"
 			}
 			if tcase.Name == "" {
@@ -52,7 +52,7 @@ func testAll(prg tp.Program, loader testLoader, handler testResultHandler) (bool
 			if result.Ok {
 				totalResult.PassedCnt += 1
 			} else {
-				totalResult.Fails = append(totalResult.Fails, result)
+				totalResult.Fails = append(totalResult.Fails, &result)
 			}
 		}
 	}
