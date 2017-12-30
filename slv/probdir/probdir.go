@@ -1,11 +1,15 @@
 package probdir
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 
+	"github.com/ryym/slv/slv/fileutil"
 	"github.com/ryym/slv/slv/tp"
 )
+
+const SRC_DIR = "src"
 
 func NewProbDir(srcPath string) (pd tp.ProbDir, err error) {
 	srcPath, err = filepath.Abs(srcPath)
@@ -13,15 +17,16 @@ func NewProbDir(srcPath string) (pd tp.ProbDir, err error) {
 		return pd, nil
 	}
 
-	root, err := GetRootPath(srcPath)
-	if err != nil {
-		return pd, err
+	newPd := &probDirImpl{
+		rootDir: filepath.Dir(filepath.Dir(srcPath)),
+		srcPath: srcPath,
 	}
 
-	return &probDirImpl{
-		rootDir: root,
-		srcPath: srcPath,
-	}, nil
+	if !isValidProbDir(newPd) {
+		return pd, errors.New("Invalid directory structure")
+	}
+
+	return newPd, nil
 }
 
 type probDirImpl struct {
@@ -32,18 +37,29 @@ type probDirImpl struct {
 func (pd *probDirImpl) WorkDir() string {
 	return filepath.Join(pd.rootDir, ".slv")
 }
+
 func (pd *probDirImpl) SrcDir() string {
-	return filepath.Join(pd.rootDir, "src")
+	return filepath.Join(pd.rootDir, SRC_DIR)
 }
+
 func (pd *probDirImpl) TestDir() string {
 	return filepath.Join(pd.rootDir, "test")
 }
+
 func (pd *probDirImpl) DestDir() string {
 	return fmt.Sprintf("%s/%s.built", pd.WorkDir(), pd.SrcFile())
 }
+
 func (pd *probDirImpl) SrcPath() string {
 	return pd.srcPath
 }
+
 func (pd *probDirImpl) SrcFile() string {
 	return filepath.Base(pd.srcPath)
+}
+
+func isValidProbDir(pd tp.ProbDir) bool {
+	return fileutil.IsDir(pd.WorkDir()) &&
+		fileutil.IsDir(pd.SrcDir()) &&
+		fileutil.IsDir(pd.TestDir())
 }

@@ -36,7 +36,7 @@ func findSrc(pathOrLang string, baseDir string) (string, error) {
 		return pathOrLang, nil
 	}
 
-	srcDir := probdir.GetSrcDir(baseDir)
+	srcDir := filepath.Join(baseDir, probdir.SRC_DIR)
 	if _, err := os.Stat(srcDir); err != nil {
 		return "", errors.New("Could not find src")
 	}
