@@ -4,18 +4,18 @@ import (
 	"errors"
 
 	"github.com/ryym/slv/slv/prgs"
-	"github.com/ryym/slv/slv/probdir"
 	"github.com/ryym/slv/slv/tp"
 )
 
-func Compile(c *tp.ExecConf) (string, error) {
-	prg, err := prgs.FindProgram(c.SrcPath)
+func Compile(app *tp.Slv) (string, error) {
+	srcPath := app.ProbDir.SrcPath()
+	prg, err := prgs.FindProgram(srcPath)
 	if err != nil {
 		return "", err
 	}
 
-	destDir := probdir.GetDestDir(c)
-	cmds := prg.GetCompileCmds(c.SrcPath, destDir)
+	destDir := app.ProbDir.DestDir()
+	cmds := prg.GetCompileCmds(srcPath, destDir)
 
 	if cmds.Cmds == nil {
 		return "", errors.New("This does not need compilation")

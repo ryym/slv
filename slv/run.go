@@ -8,10 +8,11 @@ import (
 	"github.com/ryym/slv/slv/tp"
 )
 
-func Run(c *tp.ExecConf) error {
-	fmt.Printf("running %s...\n", c.SrcFile)
+func Run(app *tp.Slv) error {
+	pb := app.ProbDir
+	fmt.Printf("running %s...\n", pb.SrcFile())
 
-	execCmds, err := findAndCompile(c)
+	execCmds, err := findAndCompile(pb.SrcPath(), pb.DestDir())
 	if err != nil {
 		return err
 	}

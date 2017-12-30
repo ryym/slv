@@ -7,25 +7,43 @@ import (
 	"github.com/ryym/slv/slv/tp"
 )
 
-func NewFromSrcPath(srcPath string) (pbd tp.Probdir, err error) {
+func NewProbDir(srcPath string) (pd tp.ProbDir, err error) {
 	srcPath, err = filepath.Abs(srcPath)
 	if err != nil {
-		return pbd, nil
+		return pd, nil
 	}
 
 	root, err := GetRootPath(srcPath)
 	if err != nil {
-		return pbd, err
+		return pd, err
 	}
 
-	return tp.Probdir{
-		RootDir: root,
-		SrcFile: filepath.Base(srcPath),
-		SrcPath: srcPath,
-		WorkDir: GetWorkDir(root),
+	return &probDirImpl{
+		rootDir: root,
+		srcPath: srcPath,
 	}, nil
 }
 
-func GetDestDir(c *tp.ExecConf) string {
-	return fmt.Sprintf("%s/%s.built", c.WorkDir, c.SrcFile)
+type probDirImpl struct {
+	rootDir string
+	srcPath string
+}
+
+func (pd *probDirImpl) WorkDir() string {
+	return filepath.Join(pd.rootDir, ".slv")
+}
+func (pd *probDirImpl) SrcDir() string {
+	return filepath.Join(pd.rootDir, "src")
+}
+func (pd *probDirImpl) TestDir() string {
+	return filepath.Join(pd.rootDir, "test")
+}
+func (pd *probDirImpl) DestDir() string {
+	return fmt.Sprintf("%s/%s.built", pd.WorkDir(), pd.SrcFile())
+}
+func (pd *probDirImpl) SrcPath() string {
+	return pd.srcPath
+}
+func (pd *probDirImpl) SrcFile() string {
+	return filepath.Base(pd.srcPath)
 }

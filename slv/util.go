@@ -6,18 +6,16 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/ryym/slv/slv/prgs"
-	"github.com/ryym/slv/slv/probdir"
 	"github.com/ryym/slv/slv/tp"
 )
 
-func findAndCompile(c *tp.ExecConf) ([]string, error) {
-	prg, err := prgs.FindProgram(c.SrcPath)
+func findAndCompile(srcPath string, destDir string) ([]string, error) {
+	prg, err := prgs.FindProgram(srcPath)
 	if err != nil {
 		return nil, err
 	}
 
-	destDir := probdir.GetDestDir(c)
-	cmds := prg.GetCompileCmds(c.SrcPath, destDir)
+	cmds := prg.GetCompileCmds(srcPath, destDir)
 
 	if cmds.Cmds != nil {
 		err = compileProgram(&cmds, destDir)

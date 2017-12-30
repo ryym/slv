@@ -12,19 +12,19 @@ import (
 	"github.com/ryym/slv/slv/tp"
 )
 
-func MakeExecConf(pathOrLang string, baseDir string) (conf tp.ExecConf, err error) {
+func NewSlvApp(pathOrLang string, baseDir string) (slv tp.Slv, err error) {
 	srcPath, err := findSrc(pathOrLang, baseDir)
 	if err != nil {
-		return conf, err
+		return slv, err
 	}
 
-	pbd, err := probdir.NewFromSrcPath(srcPath)
+	pd, err := probdir.NewProbDir(srcPath)
 	if err != nil {
-		return conf, err
+		return slv, err
 	}
 
-	return tp.ExecConf{
-		Probdir: pbd,
+	return tp.Slv{
+		ProbDir: pd,
 	}, nil
 }
 

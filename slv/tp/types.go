@@ -7,15 +7,17 @@ type CmdNewOpts struct {
 	Name string
 }
 
-type Probdir struct {
-	RootDir string
-	SrcFile string
-	SrcPath string
-	WorkDir string
+type Slv struct {
+	ProbDir ProbDir
 }
 
-type ExecConf struct {
-	Probdir
+type ProbDir interface {
+	WorkDir() string
+	SrcDir() string
+	TestDir() string
+	DestDir() string
+	SrcFile() string
+	SrcPath() string
 }
 
 type ProgramCmds interface {
