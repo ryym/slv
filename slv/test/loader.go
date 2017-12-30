@@ -2,7 +2,6 @@ package test
 
 import (
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -38,12 +37,7 @@ type testData struct {
 }
 
 func (tl *testLoaderImpl) Load(filename string) ([]testCase, error) {
-	tomlFile, err := os.Open(filepath.Join(tl.testDir, filename))
-	if err != nil {
-		return nil, err
-	}
-
-	tomlData, err := ioutil.ReadAll(tomlFile)
+	tomlData, err := ioutil.ReadFile(filepath.Join(tl.testDir, filename))
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to read %s", filename)
 	}
