@@ -13,7 +13,7 @@ type CmdNewOpts struct {
 
 type Slv struct {
 	ProbDir ProbDir
-	Program ProgramFactory
+	Program Program
 }
 
 type ProbDir interface {
@@ -23,10 +23,6 @@ type ProbDir interface {
 	DestDir() string
 	SrcFile() string
 	SrcPath() string
-}
-
-type ProgramFactory interface {
-	NewProgram(srcPath string, destDir string) (Program, error)
 }
 
 type CompileResult struct {

@@ -8,13 +8,7 @@ import (
 )
 
 func Compile(app *tp.Slv) error {
-	pd := app.ProbDir
-	prg, err := app.Program.NewProgram(pd.SrcPath(), pd.DestDir())
-	if err != nil {
-		return err
-	}
-
-	ret, err := prg.Compile()
+	ret, err := app.Program.Compile()
 	if err != nil {
 		return err
 	}

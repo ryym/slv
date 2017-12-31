@@ -12,7 +12,15 @@ import (
 type programImpl struct {
 	srcPath string
 	destDir string
-	def     programDef
+	def     tp.ProgramDef
+}
+
+func NewProgram(def tp.ProgramDef, srcPath string, destDir string) tp.Program {
+	return &programImpl{
+		srcPath: srcPath,
+		destDir: destDir,
+		def:     def,
+	}
 }
 
 func (p *programImpl) Compile() (ret tp.CompileResult, err error) {
@@ -21,10 +29,13 @@ func (p *programImpl) Compile() (ret tp.CompileResult, err error) {
 		err = os.Mkdir(p.destDir, 0755)
 	}
 	if err != nil {
-		return ret, errors.Wrap(err, "Failed to create work dir")
+		return ret, errors.Wrap(err, "Failed to create work directory")
 	}
 
-	cmds := p.def.GetCompileCmds(p.srcPath, p.destDir)
+	cmds, err := p.def.GetCompileCmds(p.srcPath, p.destDir)
+	if err != nil {
+		return ret, err
+	}
 
 	var out []byte
 	if cmds != nil {
@@ -46,7 +57,11 @@ func (p *programImpl) Run(input string) (string, error) {
 		return "", err
 	}
 
-	execCmds := p.def.GetExecCmds(p.srcPath, p.destDir)
+	execCmds, err := p.def.GetExecCmds(p.srcPath, p.destDir)
+	if err != nil {
+		return "", err
+	}
+
 	cmd := exec.Command(execCmds[0], execCmds[1:]...)
 
 	stdin, err := cmd.StdinPipe()
@@ -73,7 +88,11 @@ func (p *programImpl) RunWithPipes(stdin io.ReadCloser, stdout io.WriteCloser) e
 		return err
 	}
 
-	execCmds := p.def.GetExecCmds(p.srcPath, p.destDir)
+	execCmds, err := p.def.GetExecCmds(p.srcPath, p.destDir)
+	if err != nil {
+		return err
+	}
+
 	cmd := exec.Command(execCmds[0], execCmds[1:]...)
 	cmd.Stdin = stdin
 	cmd.Stdout = stdout

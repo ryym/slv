@@ -11,10 +11,5 @@ func TestAll(app *tp.Slv) (bool, error) {
 	pd := app.ProbDir
 	fmt.Printf("testing %s...\n", pd.SrcFile())
 
-	prg, err := app.Program.NewProgram(pd.SrcPath(), pd.DestDir())
-	if err != nil {
-		return false, err
-	}
-
-	return test.TestAll(prg, pd.TestDir())
+	return test.TestAll(app.Program, pd.TestDir())
 }
