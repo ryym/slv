@@ -53,3 +53,12 @@ type ConfLang struct {
 	Run     string
 	Exts    []string
 }
+
+type ProgramDict interface {
+	FindExts(lang string) ([]string, bool)
+	FindDefByExt(ext string) ProgramDef
+}
+type ProgramDef interface {
+	GetCompileCmds(srcPath string, destDir string) ([]string, error)
+	GetExecCmds(srcPath string, destDir string) ([]string, error)
+}
