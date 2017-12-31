@@ -57,9 +57,23 @@ func (pd *programDictImpl) FindDefByExt(ext string) tp.ProgramDef {
 	return nil
 }
 
-func (pd *programDictImpl) FindExts(name string) ([]string, bool) {
+func (pd *programDictImpl) FindExts(nameOrExt string) ([]string, bool) {
+	maybeExt := "." + nameOrExt
 	for _, p := range pd.prgs {
-		if p.name == name {
+		found := false
+
+		if p.name == nameOrExt {
+			found = true
+		} else {
+			for _, ext := range p.exts {
+				if ext == maybeExt {
+					found = true
+					break
+				}
+			}
+		}
+
+		if found {
 			exts := make([]string, len(p.exts))
 			copy(exts, p.exts)
 			return exts, true
