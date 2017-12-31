@@ -1,9 +1,7 @@
 package cli
 
 import (
-	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/ryym/slv/slv"
 	"github.com/ryym/slv/slv/tp"
@@ -94,20 +92,11 @@ func cmdCompile(c *cli.Context) error {
 		return cli.NewExitError(err.Error(), 1)
 	}
 
-	execPath, err := slv.Compile(&app)
+	err = slv.Compile(&app)
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
 	}
 
-	// Try to use relative path.
-	if err == nil {
-		relPath, err := filepath.Rel(wd, execPath)
-		if err == nil && len(relPath) < len(execPath) {
-			execPath = relPath
-		}
-	}
-
-	fmt.Printf("Compiled to %s\n", execPath)
 	return nil
 }
 

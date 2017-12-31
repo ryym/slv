@@ -24,28 +24,29 @@ func (p *programImpl) Compile() (ret tp.CompileResult, err error) {
 		return ret, errors.Wrap(err, "Failed to create work dir")
 	}
 
-	cmd := p.def.GetCompileCmds(p.srcPath, p.destDir)
+	cmds := p.def.GetCompileCmds(p.srcPath, p.destDir)
 
-	if cmd.Cmds != nil {
-		out, err := exec.Command(cmd.Cmds[0], cmd.Cmds[1:]...).CombinedOutput()
+	var out []byte
+	if cmds != nil {
+		out, err = exec.Command(cmds[0], cmds[1:]...).CombinedOutput()
 		if err != nil {
 			return ret, errors.Wrap(err, string(out))
 		}
 	}
 
 	return tp.CompileResult{
-		Compiled: cmd.Cmds != nil,
-		ExecPath: cmd.ExecPath,
+		Compiled: cmds != nil,
+		Output:   out,
 	}, nil
 }
 
 func (p *programImpl) Run(input string) (string, error) {
-	cpRet, err := p.Compile()
+	_, err := p.Compile()
 	if err != nil {
 		return "", err
 	}
 
-	execCmds := p.def.GetExecCmds(cpRet.ExecPath)
+	execCmds := p.def.GetExecCmds(p.srcPath, p.destDir)
 	cmd := exec.Command(execCmds[0], execCmds[1:]...)
 
 	stdin, err := cmd.StdinPipe()
@@ -67,12 +68,12 @@ func (p *programImpl) Run(input string) (string, error) {
 }
 
 func (p *programImpl) RunWithPipes(stdin io.ReadCloser, stdout io.WriteCloser) error {
-	cpRet, err := p.Compile()
+	_, err := p.Compile()
 	if err != nil {
 		return err
 	}
 
-	execCmds := p.def.GetExecCmds(cpRet.ExecPath)
+	execCmds := p.def.GetExecCmds(p.srcPath, p.destDir)
 	cmd := exec.Command(execCmds[0], execCmds[1:]...)
 	cmd.Stdin = stdin
 	cmd.Stdout = stdout

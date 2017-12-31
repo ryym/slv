@@ -31,7 +31,7 @@ type ProgramFactory interface {
 
 type CompileResult struct {
 	Compiled bool
-	ExecPath string
+	Output   []byte
 }
 
 type Program interface {

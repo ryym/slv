@@ -34,39 +34,30 @@ func newProgramDef(fileName string) programDef {
 
 type cmdsGo struct{}
 
-func (pg *cmdsGo) GetCompileCmds(src string, destDir string) compileCmds {
+func (pg *cmdsGo) GetCompileCmds(src string, destDir string) []string {
 	bin := filepath.Join(destDir, "out")
-	return compileCmds{
-		Cmds:     []string{"go", "build", "-o", bin, src},
-		ExecPath: bin,
-	}
+	return []string{"go", "build", "-o", bin, src}
 }
-func (pg *cmdsGo) GetExecCmds(execPath string) []string {
-	return []string{execPath}
+func (pg *cmdsGo) GetExecCmds(_src string, destDir string) []string {
+	return []string{filepath.Join(destDir, "out")}
 }
 
 type cmdsRuby struct{}
 
-func (pg *cmdsRuby) GetCompileCmds(src string, _destDir string) compileCmds {
-	return compileCmds{
-		Cmds:     nil,
-		ExecPath: src,
-	}
+func (pg *cmdsRuby) GetCompileCmds(src string, _destDir string) []string {
+	return nil
 }
-func (pg *cmdsRuby) GetExecCmds(execPath string) []string {
-	return []string{"ruby", execPath}
+func (pg *cmdsRuby) GetExecCmds(src string, _destDir string) []string {
+	return []string{"ruby", src}
 }
 
 type cmdsScala struct{}
 
-func (pg *cmdsScala) GetCompileCmds(src string, destDir string) compileCmds {
-	return compileCmds{
-		Cmds:     []string{"scalac", "-d", destDir, src},
-		ExecPath: destDir,
-	}
+func (pg *cmdsScala) GetCompileCmds(src string, destDir string) []string {
+	return []string{"scalac", "-d", destDir, src}
 }
-func (pg *cmdsScala) GetExecCmds(execPath string) []string {
+func (pg *cmdsScala) GetExecCmds(_src string, destDir string) []string {
 	// It is better if users can configure output class name
 	// (currently 'Main').
-	return []string{"scala", "-cp", execPath, "Main"}
+	return []string{"scala", "-cp", destDir, "Main"}
 }
