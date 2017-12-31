@@ -15,12 +15,14 @@ func CreateApp() *cli.App {
 	app.Commands = []cli.Command{
 		{
 			Name:      "new",
+			Aliases:   []string{"n"},
 			Usage:     "Create new problem directory",
 			ArgsUsage: "[directory]",
 			Action:    cmdNew,
 		},
 		{
 			Name:      "test",
+			Aliases:   []string{"t"},
 			Usage:     "Run tests for the specified source code",
 			ArgsUsage: "[src|lang]",
 			Action:    cmdTest,
@@ -33,6 +35,7 @@ func CreateApp() *cli.App {
 		},
 		{
 			Name:      "run",
+			Aliases:   []string{"r"},
 			Usage:     "Run the specified source code",
 			ArgsUsage: "[src|lang]",
 			Action:    cmdRun,
