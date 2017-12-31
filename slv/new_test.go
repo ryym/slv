@@ -10,7 +10,7 @@ import (
 	"github.com/ryym/slv/slv/tp"
 )
 
-func TestNewProblem(t *testing.T) {
+func TestNew(t *testing.T) {
 	dir, err := ioutil.TempDir("", "slv")
 	if err != nil {
 		t.Fatal(err)
@@ -22,7 +22,7 @@ func TestNewProblem(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = NewProblem(&tp.CmdNewOpts{Name: "hello"})
+	err = New(&tp.CmdNewOpts{Name: "hello"})
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -46,7 +46,7 @@ func cmdNew(c *cli.Context) error {
 		cli.ShowCommandHelpAndExit(c, "new", 0)
 	}
 	name := c.Args()[0]
-	return slv.NewProblem(&tp.CmdNewOpts{
+	return slv.New(&tp.CmdNewOpts{
 		Name: name,
 	})
 }
@@ -66,7 +66,7 @@ func cmdTest(c *cli.Context) error {
 		return cli.NewExitError(err.Error(), 1)
 	}
 
-	ok, err := slv.TestAll(&app)
+	ok, err := slv.Test(&app)
 
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
