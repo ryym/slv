@@ -39,3 +39,17 @@ type Program interface {
 	Run(input string) (string, error)
 	RunWithPipes(stdin io.ReadCloser, stdout io.WriteCloser) error
 }
+
+type ConfigLoader interface {
+	Load(r io.Reader) (Config, error)
+}
+
+type Config struct {
+	Langs map[string]ConfLang `toml:"lang"`
+}
+
+type ConfLang struct {
+	Compile string
+	Run     string
+	Exts    []string
+}
