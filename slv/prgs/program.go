@@ -24,6 +24,15 @@ func NewProgram(def tp.ProgramDef, srcPath string, destDir string) tp.Program {
 }
 
 func (p *programImpl) Compile() (ret tp.CompileResult, err error) {
+	cmds, err := p.def.GetCompileCmds(p.srcPath, p.destDir)
+	if err != nil {
+		return ret, err
+	}
+
+	if cmds == nil {
+		return tp.CompileResult{}, nil
+	}
+
 	_, err = os.Stat(p.destDir)
 	if os.IsNotExist(err) {
 		err = os.Mkdir(p.destDir, 0755)
@@ -32,21 +41,13 @@ func (p *programImpl) Compile() (ret tp.CompileResult, err error) {
 		return ret, errors.Wrap(err, "Failed to create work directory")
 	}
 
-	cmds, err := p.def.GetCompileCmds(p.srcPath, p.destDir)
+	out, err := exec.Command(cmds[0], cmds[1:]...).CombinedOutput()
 	if err != nil {
-		return ret, err
-	}
-
-	var out []byte
-	if cmds != nil {
-		out, err = exec.Command(cmds[0], cmds[1:]...).CombinedOutput()
-		if err != nil {
-			return ret, errors.Wrap(err, string(out))
-		}
+		return ret, errors.Wrap(err, string(out))
 	}
 
 	return tp.CompileResult{
-		Compiled: cmds != nil,
+		Compiled: true,
 		Output:   out,
 	}, nil
 }
