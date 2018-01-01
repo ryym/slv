@@ -15,9 +15,8 @@ import (
 )
 
 func NewSlvApp(pathOrLang string, baseDir string) (slv tp.Slv, err error) {
-	confL := conf.NewConfigLoader()
-
-	conf, err := confL.Load(strings.NewReader(DEFAULT_CONF))
+	confLoader := conf.NewConfigLoader()
+	conf, err := loadConf(confLoader, baseDir)
 	if err != nil {
 		return slv, err
 	}
@@ -61,6 +60,29 @@ func NewSlvApp(pathOrLang string, baseDir string) (slv tp.Slv, err error) {
 		ProbDir: probDir,
 		Program: prgs.NewProgram(def, srcPath, probDir.DestDir()),
 	}, nil
+}
+
+func loadConf(loader tp.ConfigLoader, baseDir string) (*tp.Config, error) {
+	confs, err := loader.LoadFromFiles(baseDir)
+	if err != nil {
+		return nil, err
+	}
+
+	revConfs := make([]*tp.Config, len(confs))
+	max := len(confs) - 1
+	for i := max; i >= 0; i-- {
+		revConfs[max-i] = confs[i]
+	}
+
+	conf, err := loader.Load(strings.NewReader(DEFAULT_CONF))
+	if err != nil {
+		return nil, err
+	}
+	for _, c := range revConfs {
+		conf = loader.Merge(conf, c)
+	}
+
+	return conf, nil
 }
 
 func findFirstSrc(exts []string, srcDir string) (src string, ext string, err error) {
