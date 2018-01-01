@@ -4,8 +4,8 @@ package slv
 const DEFAULT_CONF = `
 [lang.go]
 exts = ['.go']
-compile = 'go build -o {{.Join .Dest "out"}} {{.Src}}'
-run = '{{.Join .Dest "out"}}'
+compile = 'go build -o {{.Join .Dest .Out}} {{.Src}}'
+run = '{{.Join .Dest .Out}}'
 
 [lang.ruby]
 exts = ['.rb']
@@ -23,14 +23,14 @@ run = 'java -cp {{.Dest}} Main'
 
 [lang.rust]
 exts = ['.rs']
-compile = 'rustc -o {{.Join .Dest "out"}} {{.Src}}'
-run = '{{.Join .Dest "out"}}'
+compile = 'rustc -o {{.Join .Dest .Out}} {{.Src}}'
+run = '{{.Join .Dest .Out}}'
 
 # XXX: What is a most common C++ compiler?
 [lang.'c++']
 exts = ['.cpp']
-compile = 'c++ -o {{.Join .Dest "out"}} {{.Src}}'
-run = '{{.Join .Dest "out"}}'
+compile = 'c++ -o {{.Join .Dest .Out}} {{.Src}}'
+run = '{{.Join .Dest .Out}}'
 
 [lang.javascript]
 exts = ['.js']

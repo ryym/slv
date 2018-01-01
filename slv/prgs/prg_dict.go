@@ -3,6 +3,7 @@ package prgs
 import (
 	"bytes"
 	"path/filepath"
+	"runtime"
 	"strings"
 	tmpl "text/template"
 
@@ -25,6 +26,14 @@ type pathsArg struct {
 
 func (pa *pathsArg) Join(paths ...string) string {
 	return filepath.Join(paths...)
+}
+
+func (pa *pathsArg) Out() string {
+	if runtime.GOOS == "windows" {
+		return "out.exe"
+	} else {
+		return "out"
+	}
 }
 
 func (p *loadedPrg) GetCompileCmds(srcPath string, destDir string) ([]string, error) {
