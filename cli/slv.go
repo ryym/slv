@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"os"
 
 	"github.com/ryym/slv/slv"
@@ -46,7 +47,8 @@ func CreateApp() *cli.App {
 
 func cmdNew(c *cli.Context) error {
 	if c.NArg() != 1 {
-		cli.ShowCommandHelpAndExit(c, "new", 0)
+		cli.ShowCommandHelp(c, "new")
+		return nil
 	}
 	name := c.Args()[0]
 	return slv.New(&tp.CmdNewOpts{
@@ -56,48 +58,50 @@ func cmdNew(c *cli.Context) error {
 
 func cmdTest(c *cli.Context) error {
 	if c.NArg() != 1 {
-		cli.ShowCommandHelpAndExit(c, "test", 0)
+		cli.ShowCommandHelp(c, "test")
+		return nil
 	}
 
 	wd, err := os.Getwd()
 	if err != nil {
-		return cli.NewExitError(err.Error(), 1)
+		return err
 	}
 
 	app, err := slv.NewSlvApp(c.Args()[0], wd)
 	if err != nil {
-		return cli.NewExitError(err.Error(), 1)
+		return err
 	}
 
 	ok, err := slv.Test(&app)
 
 	if err != nil {
-		return cli.NewExitError(err.Error(), 1)
+		return err
 	}
 	if !ok {
-		os.Exit(1)
+		return errors.New("")
 	}
 	return nil
 }
 
 func cmdCompile(c *cli.Context) error {
 	if c.NArg() != 1 {
-		cli.ShowCommandHelpAndExit(c, "compile", 0)
+		cli.ShowCommandHelp(c, "compile")
+		return nil
 	}
 
 	wd, err := os.Getwd()
 	if err != nil {
-		return cli.NewExitError(err.Error(), 1)
+		return err
 	}
 
 	app, err := slv.NewSlvApp(c.Args()[0], wd)
 	if err != nil {
-		return cli.NewExitError(err.Error(), 1)
+		return err
 	}
 
 	err = slv.Compile(&app)
 	if err != nil {
-		return cli.NewExitError(err.Error(), 1)
+		return err
 	}
 
 	return nil
@@ -105,23 +109,23 @@ func cmdCompile(c *cli.Context) error {
 
 func cmdRun(c *cli.Context) error {
 	if c.NArg() != 1 {
-		cli.ShowCommandHelpAndExit(c, "run", 0)
+		cli.ShowCommandHelp(c, "run")
 	}
 
 	wd, err := os.Getwd()
 	if err != nil {
-		return cli.NewExitError(err.Error(), 1)
+		return err
 	}
 
 	app, err := slv.NewSlvApp(c.Args()[0], wd)
 	if err != nil {
-		return cli.NewExitError(err.Error(), 1)
+		return err
 	}
 
 	err = slv.Run(&app)
 
 	if err != nil {
-		return cli.NewExitError(err.Error(), 1)
+		return err
 	}
 	return nil
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/ryym/slv/cli"
@@ -8,5 +9,12 @@ import (
 
 func main() {
 	app := cli.CreateApp()
-	app.Run(os.Args)
+	err := app.Run(os.Args)
+
+	if err != nil {
+		if err.Error() != "" {
+			fmt.Println(err.Error())
+		}
+		os.Exit(1)
+	}
 }
