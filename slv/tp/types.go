@@ -37,7 +37,9 @@ type Program interface {
 }
 
 type ConfigLoader interface {
-	Load(r io.Reader) (Config, error)
+	Load(r io.Reader) (*Config, error)
+	LoadFromFiles(baseDir string) ([]*Config, error)
+	Merge(a *Config, b *Config) *Config
 }
 
 type Config struct {

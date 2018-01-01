@@ -22,7 +22,7 @@ func NewSlvApp(pathOrLang string, baseDir string) (slv tp.Slv, err error) {
 		return slv, err
 	}
 
-	pdict, err := prgs.MakeProgramDict(&conf)
+	pdict, err := prgs.MakeProgramDict(conf)
 	if err != nil {
 		return slv, err
 	}
