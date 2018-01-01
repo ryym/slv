@@ -1,63 +1,14 @@
 package prgs
 
 import (
-	"bytes"
-	"path/filepath"
-	"runtime"
-	"strings"
 	tmpl "text/template"
 
 	"github.com/pkg/errors"
 	"github.com/ryym/slv/slv/tp"
 )
 
-type loadedPrg struct {
-	name        string
-	compileTmpl *tmpl.Template
-	execTmpl    *tmpl.Template
-	aliases     []string
-	exts        []string
-}
-
-type pathsArg struct {
-	Src  string
-	Dest string
-}
-
-func (pa *pathsArg) Join(paths ...string) string {
-	return filepath.Join(paths...)
-}
-
-func (pa *pathsArg) Out() string {
-	if runtime.GOOS == "windows" {
-		return "out.exe"
-	} else {
-		return "out"
-	}
-}
-
-func (p *loadedPrg) GetCompileCmds(srcPath string, destDir string) ([]string, error) {
-	if p.compileTmpl == nil {
-		return nil, nil
-	}
-	return p.execCmdTmpl(p.compileTmpl, &pathsArg{srcPath, destDir})
-}
-
-func (p *loadedPrg) GetExecCmds(srcPath string, destDir string) ([]string, error) {
-	return p.execCmdTmpl(p.execTmpl, &pathsArg{srcPath, destDir})
-}
-
-func (p *loadedPrg) execCmdTmpl(t *tmpl.Template, data interface{}) ([]string, error) {
-	var out bytes.Buffer
-	err := t.Execute(&out, data)
-	if err != nil {
-		return nil, err
-	}
-	return strings.Split(out.String(), " "), nil
-}
-
 type programDictImpl struct {
-	prgs []*loadedPrg
+	prgs []*dynamicProgramDef
 }
 
 func (pd *programDictImpl) FindDefByExt(ext string) tp.ProgramDef {
@@ -97,7 +48,7 @@ func (pd *programDictImpl) FindExts(nameOrExt string) ([]string, bool) {
 }
 
 func MakeProgramDict(conf *tp.Config) (tp.ProgramDict, error) {
-	prgs := make([]*loadedPrg, len(conf.Langs))
+	prgs := make([]*dynamicProgramDef, len(conf.Langs))
 	i := 0
 
 	for name, def := range conf.Langs {
@@ -116,7 +67,7 @@ func MakeProgramDict(conf *tp.Config) (tp.ProgramDict, error) {
 			return nil, errors.Wrapf(err, "Failed to parse 'run' of %s", name)
 		}
 
-		prgs[i] = &loadedPrg{
+		prgs[i] = &dynamicProgramDef{
 			name:        name,
 			compileTmpl: compileTmpl,
 			execTmpl:    execTmpl,
