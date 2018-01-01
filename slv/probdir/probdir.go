@@ -2,7 +2,6 @@ package probdir
 
 import (
 	"errors"
-	"fmt"
 	"path/filepath"
 
 	"github.com/ryym/slv/slv/fileutil"
@@ -51,7 +50,7 @@ func (pd *probDirImpl) TestDir() string {
 }
 
 func (pd *probDirImpl) DestDir() string {
-	return fmt.Sprintf("%s/%s.built", pd.WorkDir(), pd.SrcFile())
+	return filepath.Join(pd.WorkDir(), pd.SrcFile()+".built")
 }
 
 func (pd *probDirImpl) SrcPath() string {

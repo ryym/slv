@@ -2,6 +2,7 @@ package prgs
 
 import (
 	"bytes"
+	"path/filepath"
 	"strings"
 	tmpl "text/template"
 
@@ -20,6 +21,10 @@ type loadedPrg struct {
 type pathsArg struct {
 	Src  string
 	Dest string
+}
+
+func (pa *pathsArg) Join(paths ...string) string {
+	return filepath.Join(paths...)
 }
 
 func (p *loadedPrg) GetCompileCmds(srcPath string, destDir string) ([]string, error) {
