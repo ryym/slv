@@ -26,7 +26,7 @@ USAGE:
    slv [global options] command [command options] [arguments...]
 
 VERSION:
-   0.0.0
+   0.0.1
 
 COMMANDS:
      new, n   Create new problem directory
@@ -89,5 +89,14 @@ Slv searches `.slv.toml` from current directory and its all parent directories.
 
 [default-langs]: https://github.com/ryym/slv/blob/master/slv/config.go
 
+## Installation
 
+[GitHub Releases](https://github.com/ryym/slv/releases)
 
+## Development
+
+```sh
+git clone https://github.com/ryym/slv
+go get -u github.com/golang/dep/cmd/dep
+dep ensure
+```
