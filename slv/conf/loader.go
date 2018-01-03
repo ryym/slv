@@ -25,7 +25,7 @@ func (cl *configLoaderImpl) Load(r io.Reader) (*tp.Config, error) {
 	var conf tp.Config
 	_, err := toml.DecodeReader(r, &conf)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "Failed to parse config")
 	}
 
 	return &conf, nil
