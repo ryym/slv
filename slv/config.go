@@ -11,6 +11,10 @@ run = '{{.Join .Dest .Out}}'
 exts = ['.rb']
 run = 'ruby {{.Src}}'
 
+[lang.python]
+exts = ['.py']
+run = "python {{.Src}}"
+
 [lang.scala]
 exts = ['.scala']
 compile = 'scalac -d {{.Dest}} {{.Src}}'
