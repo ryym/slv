@@ -48,5 +48,35 @@ func (tl *testLoaderImpl) Load(filename string) ([]testCase, error) {
 		return nil, errors.Wrapf(err, "failed to parse TOML content of %s", filename)
 	}
 
+	// Load input and output from files if neceessary.
+	for i, _ := range testData.Test {
+		tc := &testData.Test[i]
+		if tc.InFile != "" {
+			input, err := loadTest(tl.testDir, tc.InFile)
+			if err != nil {
+				return nil, errors.Wrapf(err, "test case [%d]", i)
+			}
+			tc.In = input
+		}
+		if tc.OutFile != "" {
+			output, err := loadTest(tl.testDir, tc.OutFile)
+			if err != nil {
+				return nil, errors.Wrapf(err, "test case [%d]", i)
+			}
+			tc.Out = output
+		}
+	}
+
 	return testData.Test, nil
+}
+
+func loadTest(dir string, path string) (string, error) {
+	if !filepath.IsAbs(path) {
+		path = filepath.Join(dir, path)
+	}
+	content, err := ioutil.ReadFile(path)
+	if err != nil {
+		return "", errors.Wrapf(err, "failed to read %s", path)
+	}
+	return string(content), nil
 }

@@ -8,9 +8,11 @@ type testLoader interface {
 }
 
 type testCase struct {
-	Name string
-	In   string
-	Out  string
+	Name    string
+	In      string
+	Out     string
+	InFile  string `toml:"in_file"`
+	OutFile string `toml:"out_file"`
 }
 
 type testCases struct {
