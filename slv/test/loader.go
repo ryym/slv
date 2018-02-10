@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
@@ -64,6 +65,12 @@ func (tl *testLoaderImpl) Load(filename string) ([]testCase, error) {
 				return nil, errors.Wrapf(err, "test case [%d]", i)
 			}
 			tc.Out = output
+		}
+
+		if tc.In == "" && tc.Out == "" {
+			return nil, fmt.Errorf(
+				"test case [%d]: `in` or `out` must be specified", i,
+			)
 		}
 	}
 
