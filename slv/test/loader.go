@@ -23,10 +23,10 @@ func (tl *testLoaderImpl) ListFileNames() ([]string, error) {
 		return nil, err
 	}
 
-	names := make([]string, len(fs))
-	for i, f := range fs {
+	var names []string
+	for _, f := range fs {
 		if !f.IsDir() && strings.HasSuffix(f.Name(), ".toml") {
-			names[i] = f.Name()
+			names = append(names, f.Name())
 		}
 	}
 	return names, nil
