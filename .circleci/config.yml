@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/ryym/slv
+    steps:
+      - run: go get -u github.com/golang/dep/cmd/dep
+      - checkout
+      - run: dep ensure
+      - run: go test ./...
