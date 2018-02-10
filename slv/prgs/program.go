@@ -38,7 +38,7 @@ func (p *programImpl) Compile() (ret tp.CompileResult, err error) {
 		err = os.Mkdir(p.destDir, 0755)
 	}
 	if err != nil {
-		return ret, errors.Wrap(err, "Failed to create work directory")
+		return ret, errors.Wrap(err, "failed to create work directory")
 	}
 
 	out, err := exec.Command(cmds[0], cmds[1:]...).CombinedOutput()
@@ -62,7 +62,7 @@ func (p *programImpl) Run(input string) (string, error) {
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
-		return "", errors.Wrap(err, "Failed to pipe stdin")
+		return "", errors.Wrap(err, "failed to pipe stdin")
 	}
 
 	go func() {

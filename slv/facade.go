@@ -14,14 +14,14 @@ func New(opts *tp.CmdNewOpts) (err error) {
 	name := opts.Name
 	err = os.Mkdir(name, 0755)
 	if err != nil {
-		return errors.Wrapf(err, "Failed to create %s directory", name)
+		return errors.Wrapf(err, "failed to create %s directory", name)
 	}
 
 	expectedDirs := []string{probdir.SRC_DIR, probdir.TEST_DIR, probdir.WORK_DIR}
 	for _, d := range expectedDirs {
 		err = os.Mkdir(name+"/"+d, 0755)
 		if err != nil {
-			return errors.Wrapf(err, "Failed to create %s directory", d)
+			return errors.Wrapf(err, "failed to create %s directory", d)
 		}
 	}
 	return nil
@@ -34,7 +34,7 @@ func Compile(app *tp.Slv) error {
 	}
 
 	if !ret.Compiled {
-		return errors.New("This does not need compilation")
+		return errors.New("this does not need compilation")
 	}
 
 	if len(ret.Output) > 0 {

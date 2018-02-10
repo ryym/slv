@@ -59,12 +59,12 @@ func MakeProgramDict(conf *tp.Config) (tp.ProgramDict, error) {
 			compileTmpl, err = tmpl.New("compile").Parse(def.Compile)
 		}
 		if err != nil {
-			return nil, errors.Wrapf(err, "Failed to parse 'compile' of %s", name)
+			return nil, errors.Wrapf(err, "failed to parse 'compile' of %s", name)
 		}
 
 		execTmpl, err := tmpl.New("exec").Parse(def.Run)
 		if err != nil {
-			return nil, errors.Wrapf(err, "Failed to parse 'run' of %s", name)
+			return nil, errors.Wrapf(err, "failed to parse 'run' of %s", name)
 		}
 
 		prgs[i] = &dynamicProgramDef{

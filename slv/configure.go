@@ -88,7 +88,7 @@ func loadConf(loader tp.ConfigLoader, baseDir string) (*tp.Config, error) {
 func findFirstSrc(exts []string, srcDir string) (src string, ext string, err error) {
 	fs, err := ioutil.ReadDir(srcDir)
 	if err != nil {
-		return "", "", errors.Wrap(err, "Failed to read src directory")
+		return "", "", errors.Wrap(err, "failed to read src directory")
 	}
 
 	for _, f := range fs {
@@ -100,5 +100,5 @@ func findFirstSrc(exts []string, srcDir string) (src string, ext string, err err
 		}
 	}
 
-	return "", "", fmt.Errorf("Could not find src")
+	return "", "", fmt.Errorf("could not find src")
 }

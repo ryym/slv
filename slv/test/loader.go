@@ -39,13 +39,13 @@ type testData struct {
 func (tl *testLoaderImpl) Load(filename string) ([]testCase, error) {
 	tomlData, err := ioutil.ReadFile(filepath.Join(tl.testDir, filename))
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to read %s", filename)
+		return nil, errors.Wrapf(err, "failed to read %s", filename)
 	}
 
 	testData := testData{}
 	err = toml.Unmarshal(tomlData, &testData)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to parse TOML content of %s", filename)
+		return nil, errors.Wrapf(err, "failed to parse TOML content of %s", filename)
 	}
 
 	return testData.Test, nil

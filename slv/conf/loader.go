@@ -51,7 +51,7 @@ func (cl *configLoaderImpl) LoadFromFiles(baseDir string) ([]*tp.Config, error) 
 		if err == nil && !stat.IsDir() {
 			file, err := os.Open(confPath)
 			if err != nil {
-				return nil, errors.Wrapf(err, "Failed to open %s", confPath)
+				return nil, errors.Wrapf(err, "failed to open %s", confPath)
 			}
 
 			conf, err := cl.Load(file)
@@ -60,7 +60,7 @@ func (cl *configLoaderImpl) LoadFromFiles(baseDir string) ([]*tp.Config, error) 
 			}
 			confs = append(confs, conf)
 		} else if err != nil && !os.IsNotExist(err) {
-			return nil, errors.Wrapf(err, "Failed to get stat of %s", confPath)
+			return nil, errors.Wrapf(err, "failed to get stat of %s", confPath)
 		}
 
 		if isRootDir(d) {

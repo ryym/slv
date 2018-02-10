@@ -26,7 +26,7 @@ func NewProbDir(srcPath string) (pd tp.ProbDir, err error) {
 	}
 
 	if !isValidProbDir(newPd) {
-		return pd, errors.New("Invalid directory structure")
+		return pd, errors.New("invalid directory structure")
 	}
 
 	return newPd, nil
