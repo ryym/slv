@@ -53,11 +53,6 @@ func (p *programImpl) Compile() (ret tp.CompileResult, err error) {
 }
 
 func (p *programImpl) Run(input string) (string, error) {
-	_, err := p.Compile()
-	if err != nil {
-		return "", err
-	}
-
 	execCmds, err := p.def.GetExecCmds(p.srcPath, p.destDir)
 	if err != nil {
 		return "", err

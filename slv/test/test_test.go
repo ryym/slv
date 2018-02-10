@@ -57,6 +57,9 @@ func Test_testAll(t *testing.T) {
 	}
 
 	prg := &tp.ProgramMock{
+		CompileFunc: func() (tp.CompileResult, error) {
+			return tp.CompileResult{true, []byte{}}, nil
+		},
 		RunFunc: func(in string) (string, error) {
 			return in + "!", nil
 		},

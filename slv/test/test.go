@@ -19,6 +19,11 @@ func testAll(prg tp.Program, loader testLoader, handler testResultHandler) (bool
 		return false, err
 	}
 
+	_, err = prg.Compile()
+	if err != nil {
+		return false, err
+	}
+
 	totalResult := totalTestResult{}
 	for _, filename := range testFiles {
 		cases, err := loader.Load(filename)
