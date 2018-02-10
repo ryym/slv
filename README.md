@@ -1,5 +1,8 @@
 # Slv
 
+[![circleci](https://circleci.com/gh/ryym/slv.svg?style=svg)](https://circleci.com/gh/ryym/slv)
+[![appveyor](https://ci.appveyor.com/api/projects/status/8e2o0r8bgcfobxmi?svg=true)](https://ci.appveyor.com/project/ryym/slv)
+
 Slv is a command line tool for managing source files of common programming contests, along with test cases.
 Slv can manage any programs that take inputs from stdin and output results to stdout regardless of language. 
 You can:
