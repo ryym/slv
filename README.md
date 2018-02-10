@@ -82,6 +82,7 @@ $ slv test ruby
 ```
 
 Test cases are loaded from all TOML files in the `test` directory.
+A sample test case file is [here](sample_cases.toml).
 
 ## Customize
 

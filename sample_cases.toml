@@ -1,0 +1,28 @@
+# This is a sample test case file.
+
+[[test]]
+# You can specify test case name (optional).
+name = "greeting to bob"
+in = "bob"
+out = "Hello, bob!"
+
+# multiline input and output
+[[test]]
+in = """
+5
+insert 10
+insert 5
+print
+insert 8
+print
+"""
+out = """
+5 10
+5 8 10
+"""
+
+# You can save input and output to other files as well.
+# The path must be an absolute or relative from the test directory.
+[[test]]
+in_file = "in3.txt"
+out_file = "out3.txt"
