@@ -70,15 +70,42 @@ EOF
 
 # Now you can test your solution!
 $ slv test src/hello.rb
+testing hello.rb...
 ..
 
 [OK] All: 2, Passed: 2, Failed: 0 
 
 # You can also specify the source file by the language name.
 $ slv test ruby
+testing hello.rb...
 ..
 
 [OK] All: 2, Passed: 2, Failed: 0 
+```
+
+When your test fails, you can view the output diff:
+
+```bash
+$ cat << EOF >> test/test.toml
+[[test]]
+in = "john"
+out = "hello, jan."
+EOF
+
+$ slv test ruby
+```
+
+```diff
+testing hello.rb...
+..F
+
+test.toml[2]:
+
+-hello, jan.
++hello, john.
+
+
+[FAILED] All: 3, Passed: 2, Failed: 1
 ```
 
 Test cases are loaded from all TOML files in the `test` directory.
