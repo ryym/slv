@@ -49,7 +49,7 @@ Example:
 # First, create new problem directory.
 $ slv new hello
 $ cd hello
-$ ls hello
+$ ls
 src/ test/
 
 # Next, write your solution.
