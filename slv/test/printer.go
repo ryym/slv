@@ -35,7 +35,7 @@ func (p *resultPrinter) OnEnd(total *totalTestResult) {
 }
 
 func (p *resultPrinter) showFailures(results []*testResult) {
-	fmt.Println("\n")
+	fmt.Print("\n\n")
 	for _, r := range results {
 		tc := r.TestCase
 
