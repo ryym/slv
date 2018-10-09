@@ -16,15 +16,7 @@ func New(opts *tp.CmdNewOpts) (err error) {
 	if err != nil {
 		return errors.Wrapf(err, "failed to create %s directory", name)
 	}
-
-	expectedDirs := []string{probdir.SRC_DIR, probdir.TEST_DIR, probdir.WORK_DIR}
-	for _, d := range expectedDirs {
-		err = os.Mkdir(name+"/"+d, 0755)
-		if err != nil {
-			return errors.Wrapf(err, "failed to create %s directory", d)
-		}
-	}
-	return nil
+	return probdir.Mkdirs(name)
 }
 
 func Compile(app *tp.Slv) error {

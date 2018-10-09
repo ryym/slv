@@ -1,10 +1,11 @@
 package probdir
 
 import (
-	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 
+	"github.com/pkg/errors"
 	"github.com/ryym/slv/slv/tp"
 )
 
@@ -13,6 +14,35 @@ const (
 	SRC_DIR  = "src"
 	TEST_DIR = "test"
 )
+
+func Mkdirs(root string) error {
+	expectedDirs := []string{SRC_DIR, TEST_DIR}
+	for _, d := range expectedDirs {
+		err := os.Mkdir(root+"/"+d, 0755)
+		if err != nil {
+			return errors.Wrapf(err, "failed to create %s directory", d)
+		}
+	}
+	return mkWorkDirIfNecessary(root + "/" + WORK_DIR)
+}
+
+func mkWorkDirIfNecessary(path string) error {
+	stat, err := os.Stat(path)
+
+	if os.IsNotExist(err) {
+		err = os.Mkdir(path, 0755)
+		if err == nil {
+			return nil
+		}
+	} else if err == nil && !stat.IsDir() {
+		return fmt.Errorf("working directory %s is not a directory", path)
+	}
+
+	if err != nil {
+		return errors.Wrapf(err, "failed to create work directory %s", path)
+	}
+	return nil
+}
 
 func NewProbDir(srcPath string) (pd tp.ProbDir, err error) {
 	srcPath, err = filepath.Abs(srcPath)
@@ -29,7 +59,8 @@ func NewProbDir(srcPath string) (pd tp.ProbDir, err error) {
 		return pd, errors.New("invalid directory structure")
 	}
 
-	return newPd, nil
+	err = mkWorkDirIfNecessary(newPd.WorkDir())
+	return newPd, err
 }
 
 type probDirImpl struct {
