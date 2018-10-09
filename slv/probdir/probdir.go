@@ -2,9 +2,9 @@ package probdir
 
 import (
 	"errors"
+	"os"
 	"path/filepath"
 
-	"github.com/ryym/slv/slv/fileutil"
 	"github.com/ryym/slv/slv/tp"
 )
 
@@ -62,7 +62,10 @@ func (pd *probDirImpl) SrcFile() string {
 }
 
 func isValidProbDir(pd tp.ProbDir) bool {
-	return fileutil.IsDir(pd.WorkDir()) &&
-		fileutil.IsDir(pd.SrcDir()) &&
-		fileutil.IsDir(pd.TestDir())
+	return isDir(pd.SrcDir()) && isDir(pd.TestDir())
+}
+
+func isDir(p string) bool {
+	s, err := os.Stat(p)
+	return err == nil && s.IsDir()
 }
