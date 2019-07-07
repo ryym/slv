@@ -158,6 +158,5 @@ Slv searches `.slv.toml` from current directory and its all parent directories.
 
 ```sh
 git clone https://github.com/ryym/slv
-go get -u github.com/golang/dep/cmd/dep
-dep ensure
+go test ./...
 ```
