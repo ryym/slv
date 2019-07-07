@@ -19,7 +19,12 @@ because they require a program that uses stdin / stdout.
 [at-coder]: https://atcoder.jp/?lang=en
 [code-iq]: https://codeiq.jp/
 
-## Usage
+## Installation
+
+- [GitHub Releases](https://github.com/ryym/slv/releases)
+- `go get -u github.com/ryym/slv`
+
+## Overview
 
 ```
 NAME:
@@ -43,73 +48,102 @@ GLOBAL OPTIONS:
    --version, -v  print the version
 ```
 
-Example:
+## Usage
+
+First, create a new problem directory.
 
 ```bash
-# First, create new problem directory.
 $ slv new hello
-$ cd hello
-$ ls
+$ ls hello
 src/ test/
+$ cd hello
+```
 
-# Next, write your solution.
-$ cat << EOF > src/hello.rb
+Next, write your solution and save it in the `src` directory.
+Any file name is fine as long as the extension is correct.
+
+```ruby
+# src/hello.rb
+
 name = gets.chomp
 puts "hello, #{name}."
-EOF
+```
 
-# And prepare test cases.
-$ cat << EOF > test/test.toml
+Then prepare the test cases in the `test` directory.
+Any file name is fine again.
+
+```toml
+# test/test.toml
+
 [[test]]
 in = "alice"
 out = "hello, alice."
+
 [[test]]
 in = "bob"
 out = "hello, bob."
-EOF
+```
 
-# Now you can test your solution!
+Now you can test your solution!
+
+```bash
 $ slv test src/hello.rb
 testing hello.rb...
 ..
 
 [OK] All: 2, Passed: 2, Failed: 0 
+```
 
-# You can also specify the source file by the language name.
+You can also specify the solution by the language name or its extension.
+
+```bash
 $ slv test ruby
+testing hello.rb...
+..
+
+[OK] All: 2, Passed: 2, Failed: 0 
+
+# Or
+
+$ slv test rb
 testing hello.rb...
 ..
 
 [OK] All: 2, Passed: 2, Failed: 0 
 ```
 
-When your test fails, you can view the output diff:
+When your test fails, Slv displays the output diff.
+For example, add a new test case which expects a different output:
 
-```bash
-$ cat << EOF >> test/test.toml
+```toml
+# test/test2.toml
+# (You can store any number of test case files in the `test` directory)
+
 [[test]]
-in = "john"
-out = "hello, jan."
-EOF
-
-$ slv test ruby
+in = "anonymous"
+out = "what your name?"
 ```
 
+This results in the error like this:
+
 ```diff
+$ slv test rb
 testing hello.rb...
 ..F
 
-test.toml[2]:
+test2.toml[0]:
 
--hello, jan.
-+hello, john.
+-what your name?
++hello, anonymous.
 
 
 [FAILED] All: 3, Passed: 2, Failed: 1
 ```
 
+## How to write test cases
+
 Test cases are loaded from all TOML files in the `test` directory.
-A sample test case file is [here](sample_cases.toml).
+See the [sample test cases](sample_cases.toml) as a reference.
 
 ## Customize
 
@@ -119,10 +153,6 @@ Slv searches `.slv.toml` from current directory and its all parent directories.
 
 
 [default-langs]: https://github.com/ryym/slv/blob/master/slv/config.go
-
-## Installation
-
-[GitHub Releases](https://github.com/ryym/slv/releases)
 
 ## Development
 
