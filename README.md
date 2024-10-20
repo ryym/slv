@@ -34,7 +34,7 @@ USAGE:
    slv [global options] command [command options] [arguments...]
 
 VERSION:
-   0.0.1
+   0.1.0
 
 COMMANDS:
      new, n   Create new problem directory
