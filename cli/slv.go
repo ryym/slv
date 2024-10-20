@@ -12,7 +12,7 @@ import (
 func CreateApp() *cli.App {
 	app := cli.NewApp()
 	app.Name = "slv"
-	app.Version = "0.1.0"
+	app.Version = "0.2.0"
 	app.Usage = "Helps you solve programming problems"
 	app.Commands = []cli.Command{
 		{
