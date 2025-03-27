@@ -3,7 +3,7 @@ module github.com/ryym/slv
 go 1.24.0
 
 require (
-	github.com/BurntSushi/toml v0.3.1
+	github.com/BurntSushi/toml v1.3.2
 	github.com/fatih/color v1.16.0
 	github.com/go-test/deep v1.1.0
 	github.com/pkg/errors v0.9.1
